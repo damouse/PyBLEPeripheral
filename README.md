@@ -6,16 +6,7 @@ This is a Python 2.7 project because I couldn't get the `dbus` libraries install
 
 ## Setup
 
-This section details how to configure a Raspberry Pi to run this code. The first section is setup just for this program, while the second contains system configuration instructions. 
-
-### Client Setup
-
-Install dependencies:
-
-```
-pip install 
-```
-
+This section details how to configure a Raspberry Pi to run this code. The first section is system setup, while the second is just for this program.
 
 ### System Setup
 
@@ -26,3 +17,12 @@ sudo apt-get install libdbus-glib-1-dev
 ```
 
 If you still encounter issues, check out this [helpful gist](https://gist.github.com/larsblumberg/2335c0ba97f805a2b996f1a7c3ac9571) for other missing packages. 
+
+
+### Client Setup
+
+Install dependencies:
+
+```
+pip install bluezero dbus-python
+```

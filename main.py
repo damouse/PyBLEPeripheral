@@ -1,6 +1,8 @@
 # Standard modules
 import os
 import dbus
+import struct
+
 try:
     from gi.repository import GObject
 except ImportError:
@@ -27,7 +29,8 @@ def get_cpu_temperature():
 
 
 def sint16(value):
-    return int(value * 100).to_bytes(2, byteorder='little', signed=True)
+    # return int(value * 100).to_bytes(2, byteorder='little', signed=True)
+    return struct.pack('<i', value * 100)
 
 
 def cpu_temp_sint16(value):
