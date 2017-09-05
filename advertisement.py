@@ -98,9 +98,7 @@ class Advertisement(dbus.service.Object):
             self.service_data = dbus.Dictionary({}, signature='sv')
         self.service_data[uuid] = dbus.Array(data, signature='y')
 
-    @dbus.service.method(DBUS_PROP_IFACE,
-                         in_signature='s',
-                         out_signature='a{sv}')
+    @dbus.service.method(DBUS_PROP_IFACE, in_signature='s', out_signature='a{sv}')
     def GetAll(self, interface):
         print 'GetAll'
         if interface != LE_ADVERTISEMENT_IFACE:
@@ -108,9 +106,7 @@ class Advertisement(dbus.service.Object):
         print 'returning props'
         return self.get_properties()[LE_ADVERTISEMENT_IFACE]
 
-    @dbus.service.method(LE_ADVERTISEMENT_IFACE,
-                         in_signature='',
-                         out_signature='')
+    @dbus.service.method(LE_ADVERTISEMENT_IFACE, in_signature='', out_signature='')
     def Release(self):
         print '%s: Released!' % self.path
 
@@ -136,8 +132,7 @@ def register_ad_error_cb(error):
 
 
 def find_adapter(bus):
-    remote_om = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, '/'),
-                               DBUS_OM_IFACE)
+    remote_om = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, '/'), DBUS_OM_IFACE)
     objects = remote_om.GetManagedObjects()
 
     for o, props in objects.iteritems():
@@ -151,25 +146,19 @@ def main():
     global mainloop
 
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-
     bus = dbus.SystemBus()
-
     adapter = find_adapter(bus)
+
     if not adapter:
         print 'LEAdvertisingManager1 interface not found'
         return
 
-    adapter_props = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, adapter),
-                                   "org.freedesktop.DBus.Properties")
-
+    adapter_props = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, adapter), "org.freedesktop.DBus.Properties")
     adapter_props.Set("org.bluez.Adapter1", "Powered", dbus.Boolean(1))
-
-    ad_manager = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, adapter),
-                                LE_ADVERTISING_MANAGER_IFACE)
+    ad_manager = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, adapter), LE_ADVERTISING_MANAGER_IFACE)
 
     test_advertisement = TestAdvertisement(bus, 0)
-
-    mainloop = gobject.MainLoop()
+    mainloop = GObject.MainLoop()
 
     ad_manager.RegisterAdvertisement(test_advertisement.get_path(), {},
                                      reply_handler=register_ad_cb,

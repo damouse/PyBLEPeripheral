@@ -120,9 +120,7 @@ class Service(dbus.service.Object):
     def get_characteristics(self):
         return self.characteristics
 
-    @dbus.service.method(DBUS_PROP_IFACE,
-                         in_signature='s',
-                         out_signature='a{sv}')
+    @dbus.service.method(DBUS_PROP_IFACE, in_signature='s', out_signature='a{sv}')
     def GetAll(self, interface):
         if interface != GATT_SERVICE_IFACE:
             raise InvalidArgsException()
@@ -629,8 +627,7 @@ def register_app_error_cb(error):
 
 
 def find_adapter(bus):
-    remote_om = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, '/'),
-                               DBUS_OM_IFACE)
+    remote_om = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, '/'), DBUS_OM_IFACE)
     objects = remote_om.GetManagedObjects()
 
     for o, props in objects.items():
@@ -644,7 +641,6 @@ def main():
     global mainloop
 
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-
     bus = dbus.SystemBus()
 
     adapter = find_adapter(bus)
@@ -657,9 +653,7 @@ def main():
         GATT_MANAGER_IFACE)
 
     app = Application(bus)
-
     mainloop = GObject.MainLoop()
-
     print('Registering GATT application...')
 
     service_manager.RegisterApplication(app.get_path(), {},

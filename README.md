@@ -18,11 +18,26 @@ sudo apt-get install libdbus-glib-1-dev
 
 If you still encounter issues, check out this [helpful gist](https://gist.github.com/larsblumberg/2335c0ba97f805a2b996f1a7c3ac9571) for other missing packages. 
 
-In order to allow `bluezero` access to `dbus`, add the following line to `/etc/dbus-1/system.conf` in the default policy. You must restart the system after making this change.
+#### Experimental Mode
+
+Running `bluez` as a GATT server requires experimental mode. Open the settings file:
 
 ```
-<allow own="ukBaz.bluezero"/>
+sudo nano /lib/systemd/system/bluetooth.service
 ```
+
+Add the flag `--experimental` to the end of the line that begins with `ExecStart=`.
+
+Finally, restart the service:
+
+```
+sudo systemctl daemon-reload
+sudo systemctl restart bluetooth
+```
+
+#### Misc
+
+If the system complains about ownership issues on DBus objects, have to turn off `deny ownership` setting on the default policy for `/etc/dbus-1/system.conf`.
 
 ### Client Setup
 
