@@ -1,0 +1,21 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "dfdc684f005c626bbdc59673d391dabcee23ec0e2ea5e13b5b4fc14be9495f1a"
+        },
+        "pipfile-spec": 1,
+        "requires": {},
+        "sources": [
+            {
+                "url": "https://pypi.python.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "bluezero": {
+            "version": "==0.0.4"
+        }
+    },
+    "develop": {}
+}
