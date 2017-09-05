@@ -4,7 +4,11 @@ import dbus.mainloop.glib
 import dbus.service
 
 import array
-import gobject
+
+try:
+    from gi.repository import GObject
+except ImportError:
+    import gobject as GObject
 
 from random import randint
 
