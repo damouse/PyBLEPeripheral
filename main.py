@@ -131,8 +131,10 @@ class ble:
         advert.service_UUIDs = [CPU_TMP_SRVC]
         # eddystone_data = tools.url_to_advert(WEB_BLINKT, 0x10, TX_POWER)
         # advert.service_data = {EDDYSTONE: eddystone_data}
+
         if not self.dongle.powered:
             self.dongle.powered = True
+
         ad_manager = advertisement.AdvertisingManager(self.dongle.path)
         ad_manager.register_advertisement(advert, {})
 

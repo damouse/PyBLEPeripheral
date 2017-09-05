@@ -18,6 +18,11 @@ sudo apt-get install libdbus-glib-1-dev
 
 If you still encounter issues, check out this [helpful gist](https://gist.github.com/larsblumberg/2335c0ba97f805a2b996f1a7c3ac9571) for other missing packages. 
 
+In order to allow `bluezero` access to `dbus`, add the following line to `/etc/dbus-1/system.conf` in the default policy. You must restart the system after making this change.
+
+```
+<allow own="ukBaz.bluezero"/>
+```
 
 ### Client Setup
 
