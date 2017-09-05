@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "dfdc684f005c626bbdc59673d391dabcee23ec0e2ea5e13b5b4fc14be9495f1a"
+            "sha256": "b0257efe05dbcd8082d201f4076a4adc9f1488f3471a39a69b55ef56ff4dcb58"
         },
         "pipfile-spec": 1,
         "requires": {},
@@ -15,6 +15,9 @@
     "default": {
         "bluezero": {
             "version": "==0.0.4"
+        },
+        "dbus-python": {
+            "version": "==1.2.4"
         }
     },
     "develop": {}
