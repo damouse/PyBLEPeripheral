@@ -19,23 +19,8 @@ import constants
 mainloop = None
 
 
-class ServiceAdvertisement(advertisement.Advertisement):
-
-    def __init__(self, bus, index, gatt):
-        advertisement.Advertisement.__init__(self, bus, index, 'peripheral')
-
-        for service in gatt.services:
-            print "Adding service UUID: ", service.uuid
-            self.add_service_uuid(service.uuid)
-
-        # self.add_manufacturer_data(0xffff, [0x00, 0x01, 0x02, 0x03, 0x04])
-        # self.add_service_data('9999', [0x00, 0x01, 0x02, 0x03, 0x04])
-        self.include_tx_power = True
-
-
 #
 # Handler Callbacks
-#
 def register_ad_cb():
     print 'Advertisement registered'
 
@@ -59,7 +44,7 @@ def main():
 
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
     bus = dbus.SystemBus()
-    adapter = service.find_adapter(bus)
+    adapter = advertisement.find_adapter(bus)
 
     if not adapter:
         print('GattManager1 interface not found')

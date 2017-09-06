@@ -16,12 +16,16 @@ import constants
 
 
 class Application(dbus.service.Object):
+    '''
+    Wraps a list of services and maintains a list of these managed objects
+    '''
+
     def __init__(self, bus):
         self.path = '/'
         self.services = []
         dbus.service.Object.__init__(self, bus, self.path)
         self.add_service(HeartRateService(bus, 0))
-        # self.add_service(BatteryService(bus, 1))
+        self.add_service(RobotService(bus, 0))
 
     def get_path(self):
         return dbus.ObjectPath(self.path)
@@ -46,6 +50,10 @@ class Application(dbus.service.Object):
                     response[desc.get_path()] = desc.get_properties()
 
         return response
+
+#
+# Base GATT class implementations
+#
 
 
 class Service(dbus.service.Object):
@@ -193,7 +201,7 @@ class Descriptor(dbus.service.Object):
 
     @dbus.service.method(constants.GATT_DESC_IFACE, in_signature='a{sv}', out_signature='ay')
     def ReadValue(self, options):
-        print ('Default ReadValue called, returning error')
+        print('Default ReadValue called, returning error')
         raise constants.NotSupportedException()
 
     @dbus.service.method(constants.GATT_DESC_IFACE, in_signature='aya{sv}')
@@ -202,6 +210,8 @@ class Descriptor(dbus.service.Object):
         raise constants.NotSupportedException()
 
 
+#
+# Demo Classes
 class HeartRateService(Service):
     HR_UUID = '180D'
 
@@ -387,23 +397,42 @@ class CharacteristicUserDescriptionDescriptor(Descriptor):
         self.value = value
 
 
-def register_app_cb():
-    print('GATT application registered')
+#
+# LHR Service and Characteristic implementations
+#
+class RobotService(Service):
+    '''
+    Main robot GATT service: single wrapper around all exposed bluetooth functionality.
+
+    This class contains at least 1 characteristic, input, but might need more. 
+    Possible other characteristics:
+        - Security, if not implemented otherwise
+        - Feedback: information returning from the robot: sensors, state, other?
+    '''
+
+    def __init__(self, bus, index):
+        Service.__init__(self, bus, index, self.ROBOT_SERVICE_UUID, True)
+
+        self.add_characteristic(InputCharacteristic(bus, 0, self))
 
 
-def register_app_error_cb(error):
-    print('Failed to register application: ' + str(error))
-    mainloop.quit()
+class InputCharacteristic(Characteristic):
+    def __init__(self, bus, index, service):
+        Characteristic.__init__(self, bus, index, constants.INPUT_CHAR_UUID, ['write'], service)
+
+    def WriteValue(self, value, options):
+        text = ''.join([chr(x) for x in value])
+
+        print('Update received: ' + str(text))
 
 
-def find_adapter(bus):
-    remote_om = dbus.Interface(bus.get_object(constants.BLUEZ_SERVICE_NAME, '/'), constants.DBUS_OM_IFACE)
-    objects = remote_om.GetManagedObjects()
 
-    for o, props in objects.items():
-        if constants.GATT_MANAGER_IFACE in props.keys():
-            return o
 
-    return None
+
+
+
+
+
+
 
 

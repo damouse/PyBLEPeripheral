@@ -1,3 +1,8 @@
+'''
+Implementatino of DBus Advertisement class. This class is light on comments-- its 
+lifted from the bluez examples almost wholesale.
+'''
+
 import array
 from random import randint
 
@@ -15,6 +20,9 @@ import constants
 
 
 class Advertisement(dbus.service.Object):
+    '''
+    Base Advertisement object, used to broadcast LHR services.
+    '''
     PATH_BASE = '/org/bluez/example/advertisement'
 
     def __init__(self, bus, index, advertising_type):
@@ -86,8 +94,30 @@ class Advertisement(dbus.service.Object):
         print '%s: Released!' % self.path
 
 
-if __name__ == '__main__':
-    main()
+class ServiceAdvertisement(advertisement.Advertisement):
+    '''
+    Our (LHR) application specific advertisement. Uses the UUIDs of services registered
+    in the passed 'gatt' object's services UUIDs
+    '''
+
+    def __init__(self, bus, index, gatt):
+        advertisement.Advertisement.__init__(self, bus, index, 'peripheral')
+
+        # Expose services
+        for service in gatt.services:
+            self.add_service_uuid(service.uuid)
+
+
+def find_adapter(bus):
+    remote_om = dbus.Interface(bus.get_object(constants.BLUEZ_SERVICE_NAME, '/'), constants.DBUS_OM_IFACE)
+    objects = remote_om.GetManagedObjects()
+
+    for o, props in objects.items():
+        if constants.GATT_MANAGER_IFACE in props.keys():
+            return o
+
+    return None
+
 
 
 

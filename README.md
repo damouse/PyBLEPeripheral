@@ -46,3 +46,5 @@ Install dependencies:
 ```
 pip install bluezero dbus-python
 ```
+
+Run the main script with `python main.py`.
