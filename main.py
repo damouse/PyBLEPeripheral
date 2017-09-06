@@ -61,19 +61,11 @@ def main():
     service_manager = dbus.Interface(service_obj, constants.GATT_MANAGER_IFACE)
 
     app = service.Application(bus)
-    ad = ServiceAdvertisement(bus, 0, app)
-
+    ad = advertisement.ServiceAdvertisement(bus, 0, app)
     mainloop = GObject.MainLoop()
 
-    print('Registering GATT application...')
-    service_manager.RegisterApplication(app.get_path(), {},
-                                        reply_handler=register_app_cb,
-                                        error_handler=register_app_error_cb)
-
-    print("Registering Advertisement...")
-    ad_manager.RegisterAdvertisement(ad.get_path(), {},
-                                     reply_handler=register_ad_cb,
-                                     error_handler=register_ad_error_cb)
+    service_manager.RegisterApplication(app.get_path(), {}, reply_handler=register_app_cb, error_handler=register_app_error_cb)
+    ad_manager.RegisterAdvertisement(ad.get_path(), {}, reply_handler=register_ad_cb, error_handler=register_ad_error_cb)
 
     mainloop.run()
 
