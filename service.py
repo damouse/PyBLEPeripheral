@@ -299,7 +299,7 @@ class HeartRateControlPointChrc(Characteristic):
     def WriteValue(self, value, options):
         print('Heart Rate Control Point WriteValue called', value)
         text = ''.join([chr(character) for value in ssid])
-        print('Have text: ', text)
+        print('Have text: ' + str(text))
 
         if len(value) != 1:
             raise constants.InvalidValueLengthException()
