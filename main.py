@@ -29,14 +29,24 @@ def main():
         print('GattManager1 interface not found')
         return
 
-    service_manager = dbus.Interface(bus.get_object(gatt.BLUEZ_SERVICE_NAME, adapter), gatt.GATT_MANAGER_IFACE)
+    adapter_obj = bus.get_object(advertisement.BLUEZ_SERVICE_NAME, adapter)
+    adapter_props = dbus.Interface(adapter_obj, "org.freedesktop.DBus.Properties")
+    adapter_props.Set("org.bluez.Adapter1", "Powered", dbus.Boolean(1))
+
+    ad_obj = bus.get_object(advertisement.BLUEZ_SERVICE_NAME, adapter)
+    ad_manager = dbus.Interface(ad_obj, advertisement.LE_ADVERTISING_MANAGER_IFACE)
+
+    service_obj = bus.get_object(gatt.BLUEZ_SERVICE_NAME, adapter)
+    service_manager = dbus.Interface(service_obj, gatt.GATT_MANAGER_IFACE)
 
     app = gatt.Application(bus)
     mainloop = GObject.MainLoop()
     print('Registering GATT application...')
 
     service_manager.RegisterApplication(app.get_path(), {},
-                                        reply_handler=gatt.register_app_cb, error_handler=gatt.register_app_error_cb)
+                                        reply_handler=gatt.register_app_cb,
+                                        error_handler=gatt.register_app_error_cb)
+
     mainloop.run()
 
 
