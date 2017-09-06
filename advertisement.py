@@ -60,19 +60,20 @@ class Advertisement(dbus.service.Object):
         properties = dict()
         properties['Type'] = self.ad_type
         if self.service_uuids is not None:
-            properties['ServiceUUIDs'] = dbus.Array(self.service_uuids,
-                                                    signature='s')
+            properties['ServiceUUIDs'] = dbus.Array(self.service_uuids, signature='s')
+
         if self.solicit_uuids is not None:
-            properties['SolicitUUIDs'] = dbus.Array(self.solicit_uuids,
-                                                    signature='s')
+            properties['SolicitUUIDs'] = dbus.Array(self.solicit_uuids, signature='s')
+
         if self.manufacturer_data is not None:
-            properties['ManufacturerData'] = dbus.Dictionary(
-                self.manufacturer_data, signature='qv')
+            properties['ManufacturerData'] = dbus.Dictionary(self.manufacturer_data, signature='qv')
+
         if self.service_data is not None:
-            properties['ServiceData'] = dbus.Dictionary(self.service_data,
-                                                        signature='sv')
+            properties['ServiceData'] = dbus.Dictionary(self.service_data, signature='sv')
+
         if self.include_tx_power is not None:
             properties['IncludeTxPower'] = dbus.Boolean(self.include_tx_power)
+
         return {LE_ADVERTISEMENT_IFACE: properties}
 
     def get_path(self):
@@ -103,6 +104,7 @@ class Advertisement(dbus.service.Object):
         print 'GetAll'
         if interface != LE_ADVERTISEMENT_IFACE:
             raise InvalidArgsException()
+
         print 'returning props'
         return self.get_properties()[LE_ADVERTISEMENT_IFACE]
 
@@ -115,6 +117,7 @@ class TestAdvertisement(Advertisement):
 
     def __init__(self, bus, index):
         Advertisement.__init__(self, bus, index, 'peripheral')
+
         self.add_service_uuid('180D')
         self.add_service_uuid('180F')
         self.add_manufacturer_data(0xffff, [0x00, 0x01, 0x02, 0x03, 0x04])
@@ -160,12 +163,18 @@ def main():
     test_advertisement = TestAdvertisement(bus, 0)
     mainloop = GObject.MainLoop()
 
-    ad_manager.RegisterAdvertisement(test_advertisement.get_path(), {},
-                                     reply_handler=register_ad_cb,
-                                     error_handler=register_ad_error_cb)
+    ad_manager.RegisterAdvertisement(test_advertisement.get_path(), {}, reply_handler=register_ad_cb, error_handler=register_ad_error_cb)
 
     mainloop.run()
 
 
 if __name__ == '__main__':
     main()
+
+
+
+
+
+
+
+

@@ -71,9 +71,11 @@ class Application(dbus.service.Object):
         for service in self.services:
             response[service.get_path()] = service.get_properties()
             chrcs = service.get_characteristics()
+
             for chrc in chrcs:
                 response[chrc.get_path()] = chrc.get_properties()
                 descs = chrc.get_descriptors()
+
                 for desc in descs:
                     response[desc.get_path()] = desc.get_properties()
 
@@ -642,24 +644,19 @@ def main():
 
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
     bus = dbus.SystemBus()
-
     adapter = find_adapter(bus)
+
     if not adapter:
         print('GattManager1 interface not found')
         return
 
-    service_manager = dbus.Interface(
-        bus.get_object(BLUEZ_SERVICE_NAME, adapter),
-        GATT_MANAGER_IFACE)
+    service_manager = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, adapter), GATT_MANAGER_IFACE)
 
     app = Application(bus)
     mainloop = GObject.MainLoop()
     print('Registering GATT application...')
 
-    service_manager.RegisterApplication(app.get_path(), {},
-                                        reply_handler=register_app_cb,
-                                        error_handler=register_app_error_cb)
-
+    service_manager.RegisterApplication(app.get_path(), {}, reply_handler=register_app_cb, error_handler=register_app_error_cb)
     mainloop.run()
 
 
