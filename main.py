@@ -34,6 +34,27 @@ class ServiceAdvertisement(advertisement.Advertisement):
         self.include_tx_power = True
 
 
+#
+# Handler Callbacks
+#
+def register_ad_cb():
+    print 'Advertisement registered'
+
+
+def register_ad_error_cb(error):
+    print 'Failed to register advertisement: ' + str(error)
+    mainloop.quit()
+
+
+def register_app_cb():
+    print('GATT application registered')
+
+
+def register_app_error_cb(error):
+    print('Failed to register application: ' + str(error))
+    mainloop.quit()
+
+
 def main():
     global mainloop
 
@@ -62,13 +83,13 @@ def main():
 
     print('Registering GATT application...')
     service_manager.RegisterApplication(app.get_path(), {},
-                                        reply_handler=gatt.register_app_cb,
-                                        error_handler=gatt.register_app_error_cb)
+                                        reply_handler=register_app_cb,
+                                        error_handler=register_app_error_cb)
 
     print("Registering Advertisement...")
     ad_manager.RegisterAdvertisement(ad.get_path(), {},
-                                     reply_handler=advertisement.register_ad_cb,
-                                     error_handler=advertisement.register_ad_error_cb)
+                                     reply_handler=register_ad_cb,
+                                     error_handler=register_ad_error_cb)
 
     mainloop.run()
 
