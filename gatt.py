@@ -45,9 +45,6 @@ class FailedException(dbus.exceptions.DBusException):
 
 
 class Application(dbus.service.Object):
-    """
-    org.bluez.GattApplication1 interface implementation
-    """
 
     def __init__(self, bus):
         self.path = '/'
@@ -83,9 +80,6 @@ class Application(dbus.service.Object):
 
 
 class Service(dbus.service.Object):
-    """
-    org.bluez.GattService1 interface implementation
-    """
     PATH_BASE = '/org/bluez/example/service'
 
     def __init__(self, bus, index, uuid, primary):
@@ -131,9 +125,6 @@ class Service(dbus.service.Object):
 
 
 class Characteristic(dbus.service.Object):
-    """
-    org.bluez.GattCharacteristic1 interface implementation
-    """
 
     def __init__(self, bus, index, uuid, flags, service):
         self.path = service.path + '/char' + str(index)
@@ -171,18 +162,14 @@ class Characteristic(dbus.service.Object):
     def get_descriptors(self):
         return self.descriptors
 
-    @dbus.service.method(DBUS_PROP_IFACE,
-                         in_signature='s',
-                         out_signature='a{sv}')
+    @dbus.service.method(DBUS_PROP_IFACE, in_signature='s', out_signature='a{sv}')
     def GetAll(self, interface):
         if interface != GATT_CHRC_IFACE:
             raise InvalidArgsException()
 
         return self.get_properties()[GATT_CHRC_IFACE]
 
-    @dbus.service.method(GATT_CHRC_IFACE,
-                         in_signature='a{sv}',
-                         out_signature='ay')
+    @dbus.service.method(GATT_CHRC_IFACE, in_signature='a{sv}', out_signature='ay')
     def ReadValue(self, options):
         print('Default ReadValue called, returning error')
         raise NotSupportedException()
@@ -202,17 +189,12 @@ class Characteristic(dbus.service.Object):
         print('Default StopNotify called, returning error')
         raise NotSupportedException()
 
-    @dbus.service.signal(DBUS_PROP_IFACE,
-                         signature='sa{sv}as')
+    @dbus.service.signal(DBUS_PROP_IFACE, signature='sa{sv}as')
     def PropertiesChanged(self, interface, changed, invalidated):
         pass
 
 
 class Descriptor(dbus.service.Object):
-    """
-    org.bluez.GattDescriptor1 interface implementation
-    """
-
     def __init__(self, bus, index, uuid, flags, characteristic):
         self.path = characteristic.path + '/desc' + str(index)
         self.bus = bus
@@ -233,9 +215,7 @@ class Descriptor(dbus.service.Object):
     def get_path(self):
         return dbus.ObjectPath(self.path)
 
-    @dbus.service.method(DBUS_PROP_IFACE,
-                         in_signature='s',
-                         out_signature='a{sv}')
+    @dbus.service.method(DBUS_PROP_IFACE, in_signature='s', out_signature='a{sv}')
     def GetAll(self, interface):
         if interface != GATT_DESC_IFACE:
             raise InvalidArgsException()
@@ -256,12 +236,7 @@ class Descriptor(dbus.service.Object):
 
 
 class HeartRateService(Service):
-    """
-    Fake Heart Rate Service that simulates a fake heart beat and control point
-    behavior.
-
-    """
-    HR_UUID = '0000180d-0000-1000-8000-00805f9b34fb'
+    HR_UUID = '180D'
 
     def __init__(self, bus, index):
         Service.__init__(self, bus, index, self.HR_UUID, True)
@@ -294,14 +269,12 @@ class HeartRateMeasurementChrc(Characteristic):
             value.append(dbus.Byte(self.service.energy_expended & 0xff))
             value.append(dbus.Byte((self.service.energy_expended >> 8) & 0xff))
 
-        self.service.energy_expended = \
-            min(0xffff, self.service.energy_expended + 1)
+        self.service.energy_expended = min(0xffff, self.service.energy_expended + 1)
         self.hr_ee_count += 1
 
         print('Updating value: ' + repr(value))
 
         self.PropertiesChanged(GATT_CHRC_IFACE, {'Value': value}, [])
-
         return self.notifying
 
     def _update_hr_msrmt_simulation(self):
@@ -371,10 +344,6 @@ class HeartRateControlPointChrc(Characteristic):
 
 
 class BatteryService(Service):
-    """
-    Fake Battery service that emulates a draining battery.
-
-    """
     BATTERY_UUID = '180f'
 
     def __init__(self, bus, index):
@@ -383,11 +352,6 @@ class BatteryService(Service):
 
 
 class BatteryLevelCharacteristic(Characteristic):
-    """
-    Fake Battery Level characteristic. The battery level is drained by 2 points
-    every 5 seconds.
-
-    """
     BATTERY_LVL_UUID = '2a19'
 
     def __init__(self, bus, index, service):
