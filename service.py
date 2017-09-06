@@ -300,8 +300,8 @@ class HeartRateControlPointChrc(Characteristic):
         print('Heart Rate Control Point WriteValue called: ', value)
         print('Type of value: ' + str(value.__type__))
 
-        #text = ''.join([chr(x) for x in value])
-        #print('Have text: ' + str(text))
+        text = ''.join([chr(x) for x in value])
+        print('Have text: ' + str(text))
 
         if len(value) != 1:
             raise constants.InvalidValueLengthException()
