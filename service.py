@@ -298,7 +298,7 @@ class HeartRateControlPointChrc(Characteristic):
 
     def WriteValue(self, value, options):
         print('Heart Rate Control Point WriteValue called', value)
-        text = ''.join([chr(character) for value in ssid])
+        text = ''.join([chr(x) for x in value])
         print('Have text: ' + str(text))
 
         if len(value) != 1:
