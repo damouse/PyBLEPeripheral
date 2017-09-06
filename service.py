@@ -193,9 +193,7 @@ class Descriptor(dbus.service.Object):
 
         return self.get_properties()[constants.GATT_DESC_IFACE]
 
-    @dbus.service.method(constants.GATT_DESC_IFACE,
-                         in_signature='a{sv}',
-                         out_signature='ay')
+    @dbus.service.method(constants.GATT_DESC_IFACE, in_signature='a{sv}', out_signature='ay')
     def ReadValue(self, options):
         print ('Default ReadValue called, returning error')
         raise constants.NotSupportedException()
@@ -300,6 +298,8 @@ class HeartRateControlPointChrc(Characteristic):
 
     def WriteValue(self, value, options):
         print('Heart Rate Control Point WriteValue called', value)
+        text = ''.join([chr(character) for value in ssid])
+        print('Have text: ', text)
 
         if len(value) != 1:
             raise constants.InvalidValueLengthException()
