@@ -222,7 +222,9 @@ class Descriptor(dbus.service.Object):
 
         return self.get_properties()[GATT_DESC_IFACE]
 
-    @dbus.service.method(GATT_DESC_IFACE, in_signature='a{sv}', out_signature='ay')
+    @dbus.service.method(GATT_DESC_IFACE,
+                         in_signature='a{sv}',
+                         out_signature='ay')
     def ReadValue(self, options):
         print ('Default ReadValue called, returning error')
         raise NotSupportedException()
@@ -234,7 +236,7 @@ class Descriptor(dbus.service.Object):
 
 
 class HeartRateService(Service):
-    HR_UUID = '108D'
+    HR_UUID = '180D'
 
     def __init__(self, bus, index):
         Service.__init__(self, bus, index, self.HR_UUID, True)
@@ -245,7 +247,7 @@ class HeartRateService(Service):
 
 
 class HeartRateMeasurementChrc(Characteristic):
-    HR_MSRMT_UUID = '0101'
+    HR_MSRMT_UUID = '00002a37-0000-1000-8000-00805f9b34fb'
 
     def __init__(self, bus, index, service):
         Characteristic.__init__(
@@ -316,7 +318,7 @@ class BodySensorLocationChrc(Characteristic):
 
 
 class HeartRateControlPointChrc(Characteristic):
-    HR_CTRL_PT_UUID = '0202'
+    HR_CTRL_PT_UUID = '00002a39-0000-1000-8000-00805f9b34fb'
 
     def __init__(self, bus, index, service):
         Characteristic.__init__(
