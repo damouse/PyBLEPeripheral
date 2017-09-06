@@ -24,12 +24,13 @@ class ServiceAdvertisement(advertisement.Advertisement):
         advertisement.Advertisement.__init__(self, bus, index, 'peripheral')
 
         for service in gatt.services:
+            print "Adding service UUID: ", service.uuid
             self.add_service_uuid(service.uuid)
 
         # self.add_service_uuid('180D')
         # self.add_service_uuid('180F')
-        self.add_manufacturer_data(0xffff, [0x00, 0x01, 0x02, 0x03, 0x04])
-        self.add_service_data('9999', [0x00, 0x01, 0x02, 0x03, 0x04])
+        # self.add_manufacturer_data(0xffff, [0x00, 0x01, 0x02, 0x03, 0x04])
+        # self.add_service_data('9999', [0x00, 0x01, 0x02, 0x03, 0x04])
         self.include_tx_power = True
 
 
