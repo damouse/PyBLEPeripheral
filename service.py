@@ -299,7 +299,7 @@ class HeartRateControlPointChrc(Characteristic):
             service)
 
     def WriteValue(self, value, options):
-        print('Heart Rate Control Point WriteValue called')
+        print('Heart Rate Control Point WriteValue called', value)
 
         if len(value) != 1:
             raise constants.InvalidValueLengthException()
@@ -368,10 +368,6 @@ class BatteryLevelCharacteristic(Characteristic):
 
 
 class CharacteristicUserDescriptionDescriptor(Descriptor):
-    """
-    Writable CUD descriptor.
-
-    """
     CUD_UUID = '2901'
 
     def __init__(self, bus, index, characteristic):
