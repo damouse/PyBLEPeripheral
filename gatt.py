@@ -236,7 +236,7 @@ class Descriptor(dbus.service.Object):
 
 
 class HeartRateService(Service):
-    HR_UUID = '180D'
+    HR_UUID = '108D'
 
     def __init__(self, bus, index):
         Service.__init__(self, bus, index, self.HR_UUID, True)
