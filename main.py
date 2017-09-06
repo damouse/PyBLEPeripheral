@@ -18,6 +18,21 @@ except ImportError:
 mainloop = None
 
 
+class ServiceAdvertisement(advertisement.Advertisement):
+
+    def __init__(self, bus, index, gatt):
+        advertisement.Advertisement.__init__(self, bus, index, 'peripheral')
+
+        for service in gatt.services:
+            self.add_service_uuid(service.uuid)
+
+        # self.add_service_uuid('180D')
+        # self.add_service_uuid('180F')
+        self.add_manufacturer_data(0xffff, [0x00, 0x01, 0x02, 0x03, 0x04])
+        self.add_service_data('9999', [0x00, 0x01, 0x02, 0x03, 0x04])
+        self.include_tx_power = True
+
+
 def main():
     global mainloop
 
@@ -40,12 +55,19 @@ def main():
     service_manager = dbus.Interface(service_obj, gatt.GATT_MANAGER_IFACE)
 
     app = gatt.Application(bus)
-    mainloop = GObject.MainLoop()
-    print('Registering GATT application...')
+    ad = ServiceAdvertisement(bus, 0, app)
 
+    mainloop = GObject.MainLoop()
+
+    print('Registering GATT application...')
     service_manager.RegisterApplication(app.get_path(), {},
                                         reply_handler=gatt.register_app_cb,
                                         error_handler=gatt.register_app_error_cb)
+
+    print("Registering Advertisement...")
+    ad_manager.RegisterAdvertisement(ad.get_path(), {},
+                                     reply_handler=advertisement.register_ad_cb,
+                                     error_handler=advertisement.register_ad_error_cb)
 
     mainloop.run()
 
