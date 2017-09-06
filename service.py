@@ -298,7 +298,7 @@ class HeartRateControlPointChrc(Characteristic):
 
     def WriteValue(self, value, options):
         print('Heart Rate Control Point WriteValue called: ', value)
-        # print('Type of value: ' + str(value.__type__))
+        print('Type of value: ' + str(value.__type__))
 
         #text = ''.join([chr(x) for x in value])
         #print('Have text: ' + str(text))
