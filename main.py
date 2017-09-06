@@ -13,6 +13,7 @@ except ImportError:
 
 import advertisement
 import service
+import constants
 
 # Global main loop
 mainloop = None
@@ -71,8 +72,8 @@ def main():
     ad_obj = bus.get_object(advertisement.BLUEZ_SERVICE_NAME, adapter)
     ad_manager = dbus.Interface(ad_obj, advertisement.LE_ADVERTISING_MANAGER_IFACE)
 
-    service_obj = bus.get_object(service.BLUEZ_SERVICE_NAME, adapter)
-    service_manager = dbus.Interface(service_obj, service.GATT_MANAGER_IFACE)
+    service_obj = bus.get_object(constants.BLUEZ_SERVICE_NAME, adapter)
+    service_manager = dbus.Interface(service_obj, constants.GATT_MANAGER_IFACE)
 
     app = service.Application(bus)
     ad = ServiceAdvertisement(bus, 0, app)
