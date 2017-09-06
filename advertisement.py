@@ -94,14 +94,14 @@ class Advertisement(dbus.service.Object):
         print '%s: Released!' % self.path
 
 
-class ServiceAdvertisement(advertisement.Advertisement):
+class ServiceAdvertisement(Advertisement):
     '''
     Our (LHR) application specific advertisement. Uses the UUIDs of services registered
     in the passed 'gatt' object's services UUIDs
     '''
 
     def __init__(self, bus, index, gatt):
-        advertisement.Advertisement.__init__(self, bus, index, 'peripheral')
+        Advertisement.__init__(self, bus, index, 'peripheral')
 
         # Expose services
         for service in gatt.services:
