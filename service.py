@@ -14,8 +14,6 @@ except ImportError:
 
 import constants
 
-mainloop = None
-
 
 class Application(dbus.service.Object):
     def __init__(self, bus):
@@ -409,26 +407,3 @@ def find_adapter(bus):
     return None
 
 
-def main():
-    global mainloop
-
-    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-    bus = dbus.SystemBus()
-    adapter = find_adapter(bus)
-
-    if not adapter:
-        print('GattManager1 interface not found')
-        return
-
-    service_manager = dbus.Interface(bus.get_object(constants.BLUEZ_SERVICE_NAME, adapter), constants.GATT_MANAGER_IFACE)
-
-    app = Application(bus)
-    mainloop = GObject.MainLoop()
-    print('Registering GATT application...')
-
-    service_manager.RegisterApplication(app.get_path(), {}, reply_handler=register_app_cb, error_handler=register_app_error_cb)
-    mainloop.run()
-
-
-if __name__ == '__main__':
-    main()
