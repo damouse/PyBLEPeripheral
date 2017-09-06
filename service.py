@@ -411,8 +411,7 @@ class RobotService(Service):
     '''
 
     def __init__(self, bus, index):
-        Service.__init__(self, bus, index, self.ROBOT_SERVICE_UUID, True)
-
+        Service.__init__(self, bus, index, constants.ROBOT_SERVICE_UUID, True)
         self.add_characteristic(InputCharacteristic(bus, 0, self))
 
 
