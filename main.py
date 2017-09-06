@@ -1,20 +1,20 @@
-import advertisement
-import gatt
+import sys
+import array
+from random import randint
 
 import dbus.exceptions
 import dbus.mainloop.glib
 import dbus.service
-
-import sys
-import array
-from random import randint
 
 try:
     from gi.repository import GObject
 except ImportError:
     import gobject as GObject
 
+import advertisement
+import service
 
+# Global main loop
 mainloop = None
 
 
@@ -58,7 +58,7 @@ def main():
 
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
     bus = dbus.SystemBus()
-    adapter = gatt.find_adapter(bus)
+    adapter = service.find_adapter(bus)
 
     if not adapter:
         print('GattManager1 interface not found')
@@ -71,10 +71,10 @@ def main():
     ad_obj = bus.get_object(advertisement.BLUEZ_SERVICE_NAME, adapter)
     ad_manager = dbus.Interface(ad_obj, advertisement.LE_ADVERTISING_MANAGER_IFACE)
 
-    service_obj = bus.get_object(gatt.BLUEZ_SERVICE_NAME, adapter)
-    service_manager = dbus.Interface(service_obj, gatt.GATT_MANAGER_IFACE)
+    service_obj = bus.get_object(service.BLUEZ_SERVICE_NAME, adapter)
+    service_manager = dbus.Interface(service_obj, service.GATT_MANAGER_IFACE)
 
-    app = gatt.Application(bus)
+    app = service.Application(bus)
     ad = ServiceAdvertisement(bus, 0, app)
 
     mainloop = GObject.MainLoop()
