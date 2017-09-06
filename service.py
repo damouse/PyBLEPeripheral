@@ -422,7 +422,7 @@ class InputCharacteristic(Characteristic):
     def WriteValue(self, value, options):
         text = ''.join([chr(x) for x in value])
 
-        print('Update received: ' + str(text))
+        print('Robot received input update: ' + str(text))
 
 
 
