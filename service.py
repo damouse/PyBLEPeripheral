@@ -1,3 +1,8 @@
+'''
+Most of this code was taken from the Bluez examples directory and was adapted as needed to 
+get basic BLE communication up and running. (Hint: all the stuff following cpp conventions.)
+'''
+
 import array
 from random import randint
 import sys
@@ -51,11 +56,38 @@ class Application(dbus.service.Object):
 
         return response
 
+
+#
+# LHR Service and Characteristic implementations
+class RobotService(Service):
+    '''
+    Main robot GATT service: single wrapper around all exposed bluetooth functionality.
+
+    This class contains at least 1 characteristic, input, but might need more. 
+    Possible other characteristics:
+        - Security, if not implemented otherwise
+        - Feedback: information returning from the robot: sensors, state, other?
+    '''
+
+    def __init__(self, bus, index):
+        Service.__init__(self, bus, index, constants.ROBOT_SERVICE_UUID, True)
+        self.add_characteristic(InputCharacteristic(bus, 0, self))
+
+
+class InputCharacteristic(Characteristic):
+    def __init__(self, bus, index, service):
+        Characteristic.__init__(self, bus, index, constants.INPUT_CHAR_UUID, ['write'], service)
+
+    def WriteValue(self, value, options):
+        '''
+        Receives incoming data
+        '''
+        text = ''.join([chr(x) for x in value])
+        print('Robot received input update: ' + str(text))
+
+
 #
 # Base GATT class implementations
-#
-
-
 class Service(dbus.service.Object):
     PATH_BASE = '/org/bluez/example/service'
 
@@ -396,33 +428,6 @@ class CharacteristicUserDescriptionDescriptor(Descriptor):
             raise constants.NotPermittedException()
         self.value = value
 
-
-#
-# LHR Service and Characteristic implementations
-#
-class RobotService(Service):
-    '''
-    Main robot GATT service: single wrapper around all exposed bluetooth functionality.
-
-    This class contains at least 1 characteristic, input, but might need more. 
-    Possible other characteristics:
-        - Security, if not implemented otherwise
-        - Feedback: information returning from the robot: sensors, state, other?
-    '''
-
-    def __init__(self, bus, index):
-        Service.__init__(self, bus, index, constants.ROBOT_SERVICE_UUID, True)
-        self.add_characteristic(InputCharacteristic(bus, 0, self))
-
-
-class InputCharacteristic(Characteristic):
-    def __init__(self, bus, index, service):
-        Characteristic.__init__(self, bus, index, constants.INPUT_CHAR_UUID, ['write'], service)
-
-    def WriteValue(self, value, options):
-        text = ''.join([chr(x) for x in value])
-
-        print('Robot received input update: ' + str(text))
 
 
 

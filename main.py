@@ -1,3 +1,6 @@
+'''
+Entry point into Bluetooth 
+'''
 import sys
 import array
 from random import randint
