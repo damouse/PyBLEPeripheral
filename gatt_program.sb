@@ -1048,8 +1048,7 @@ sub InitHrsService()
   AssertRC(rc,  1025)
   if rc==0 then
     DbgMsg("Adding advertisement for service")
-    rc = AddUuid(UUID_SERVICE)
-    AssertRC(rc, 1052)
+    AddUuid(UUID_SERVICE)
   endif
 
 endsub
