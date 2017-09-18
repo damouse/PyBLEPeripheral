@@ -89,6 +89,7 @@ uuidService$ = "d4d9365fcd084024b670b0ec0d6632bd"
 uuidService$ = StrDehexize$(uuidService$)
 UUID_SERVICE = BleHandleUuid128(uuidService$)
 
+dim hMyChar
 
 #set $cmpif,  0x0 //Disable battery service
 //#set $cmpif,  0x4 //Enable battery service
@@ -970,7 +971,7 @@ endfunc rc
 
 
 //==============================================================================
-// Heart Sensor Location Characteristic
+// LHR Writable Characteristic 
 //==============================================================================
 function AddCharHrsSensLoc() as integer
   dim rc
@@ -996,8 +997,8 @@ function AddCharHrsSensLoc() as integer
 
   //AssertRC(rc,  966)
   //Create the Characteristic object
-  // NOTE: this is where the char should be "write",  right?
-  chProp = BLE_CHAR_PROPERTIES_WRITE_WO_RESPONSE
+
+  chProp = BLE_CHAR_PROPERTIES_READ + BLE_CHAR_PROPERTIES_WRITE
   rc = BleCharNew(chProp, UUID_CHAR, mdAttr, mdCccd, mdSccd)
   AssertRC(rc,  970)
 
@@ -1006,7 +1007,7 @@ function AddCharHrsSensLoc() as integer
   //++++
   attr$ ="\00"
   rc = BleEncode8(attr$, sensLoc, 0)
-  rc = BleCharCommit(shHrs, attr$, chHrsLoc)
+  rc = BleCharCommit(shHrs, attr$, hMyChar)
   AssertRC(rc,  978)
 
 endfunc rc
@@ -1472,6 +1473,19 @@ function HandlerBlrAdvTimOut() as integer
 
 endfunc 1
 
+//==============================================================================
+// This handler is called when a remote peer writes to a characteristic
+//==============================================================================
+FUNCTION HandlerCharVal(BYVAL charHandle, BYVAL offset, BYVAL len)
+  DIM s$
+  IF charHandle == hMyChar THEN
+    PRINT "\n";len;" byte(s) have been written to char value attribute from offset ";offset
+    rc=BleCharValueRead(hMyChar,s$)
+    PRINT "\nNew Char Value: ";s$
+  ENDIF
+
+ // CloseConnections()
+ENDFUNC 1
 
 //******************************************************************************
 // Equivalent to main() in C
@@ -1484,6 +1498,7 @@ OnEvent  EVUARTRX           call HandlerUartRx
 OnEvent  EVBLEMSG           call HandlerBleMsg
 OnEvent  EVBLE_ADV_TIMEOUT  call HandlerBlrAdvTimOut
 OnEvent  EVCHARCCCD         call HandlerCharCccd
+ONEVENT  EVCHARVAL          CALL HandlerCharVal
 
 //------------------------------------------------------------------------------
 // Initialise and then wait for events
