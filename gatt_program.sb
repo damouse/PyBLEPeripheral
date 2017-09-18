@@ -989,8 +989,10 @@ function AddCharHrsSensLoc() as integer
   //++++
   mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN, BLE_ATTR_ACCESS_NONE, 1, 0, rc)
   AssertRC(rc,  960)
+
   //There is a CCCD in this characteristic
   mdCccd=BLE_CHAR_METADATA_ATTR_NOT_PRESENT
+
   //AssertRC(rc,  963)
   //There is no SCCD in this characteristic
   mdSccd = BLE_CHAR_METADATA_ATTR_NOT_PRESENT
@@ -1009,8 +1011,31 @@ function AddCharHrsSensLoc() as integer
   rc = BleEncode8(attr$, sensLoc, 0)
   rc = BleCharCommit(shHrs, attr$, hMyChar)
   AssertRC(rc,  978)
-
 endfunc rc
+
+//==============================================================================
+// LHR Writable Service #2
+//==============================================================================
+FUNCTION RegisterLhrChar()
+ DIM rc, hSvc, attr$, adRpt$, addr$, scRpt$ : attr$="Hi"
+
+ //commit service
+ // rc=BleSvcCommit(1,BleHandleUuid16(0x18EE),hSvc)
+
+ //initialise char, write/read enabled, accept signed writes
+ rc = BleCharNew(0x0A, UUID_CHAR, BleAttrMetaData(1,1,20,0,rc), 0, 0)
+ AssertRC(rc,  1027)
+
+ //commit char initialised above, with initial value "hi" to service 'hSvc'
+ rc=BleCharCommit(shHrs, attr$, hMyChar)
+
+ // rc=BleScanRptInit(scRpt$)
+ // Add 1 service handle to scan report
+ // rc=BleAdvRptAddUuid16(scRpt$,0x18EE,-1,-1,-1,-1,-1)
+ //commit reports to GATT table - adRpt$ is empty
+ // rc=BleAdvRptsCommit(adRpt$,scRpt$)
+ // rc=BleAdvertStart(0,addr$,20,300000,0)
+ENDFUNC rc
 
 //==============================================================================
 // Heart Service
@@ -1026,8 +1051,9 @@ function RegHrsService() as integer
   // rc = AddCharHrsMeas()
   // AssertRC(rc,  994)
 
-  //Create the READ characteristic
-  rc = AddCharHrsSensLoc()
+  //Create the WRITE characteristic
+  // rc = AddCharHrsSensLoc()
+  rc = RegisterLhrChar()
   AssertRC(rc,  998)
   
   //Commit Heart Rate service to GATT table
