@@ -53,24 +53,18 @@ FUNCTION OnStartup()
 
     rc=BleAdvRptInit(adRpt$,0x02,0,20)
     AssertRc(rc, 55) 
-    
-    //initialise scan report
+
     rc=BleScanRptInit(scRpt$) 
     AssertRC(rc, 52)
 
-    rc=BleAdvRptInit(adRpt$,0x02,0,20)
-    AssertRC(rc, 55)
-
-    //Add 1 service handle to scan report
     // rc=BleAdvRptAddUuid16(scRpt$,0x18EE,-1,-1,-1,-1,-1)
     rc=BleAdvRptAddUuid128(adRpt$, UUID_SERVICE) //,-1,-1,-1,-1,-1)
     AssertRC(rc, 57)
 
-    //commit reports to GATT table - adRpt$ is empty
     rc=BleAdvRptsCommit(adRpt$,scRpt$)
     AssertRC(rc, 61)
 
-    rc=BleAdvertStart(0,addr$,150,0,0)
+    rc=BleAdvertStart(0, addr$, 150, 0, 0)
     AssertRC(rc, 64)
 
 ENDFUNC rc
