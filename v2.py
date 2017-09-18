@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 
 import pydbus
-from gi.repository import GLib
+
+try:
+    from gi.repository import GObject
+    from gi.repository import GLib
+except ImportError:
+    import gobject as GObject
 
 
 class Advertisement(object):
