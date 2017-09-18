@@ -1,27 +1,29 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import serial
-import kbhit
 
 ser = serial.Serial(
-  port='/dev/ttyAMA0',
-  baudrate = 115200,
-  #parity=serial.PARITY_NONE,
-  #topbits=serial.STOPBITS_ONE,
-  #bytesize=serial.EIGHTBITS,
-  timeout=0.1,
-  rtscts=1
+    port='/dev/ttyAMA0',
+    baudrate=115200,
+    timeout=0.1,
+    rtscts=1
 )
 
-while 1:
-    while ser.in_waiting:
-        #x = ser.read()
-        x = ser.readline()
-        x = x.decode()
-        print (x)
 
-    while kbhit.kbhit():
-        r = input()
-        print(r)
-        ser.write(bytes(r, 'UTF-8'))
-        
-ser.close()
+def main():
+    first = True
+
+    while True:
+        while ser.in_waiting:
+            x = ser.readline()
+            x = x.decode()
+            print (x)
+
+        if first:
+            ser.write("txpower\r")
+            first = False
+
+    ser.close()
+
+
+if __name__ == '__main__':
+    main()

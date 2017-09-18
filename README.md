@@ -35,6 +35,15 @@ sudo systemctl daemon-reload
 sudo systemctl restart bluetooth
 ```
 
+## Interacting with LaircCP BL625
+
+This is the breakout board that houses our bluetooth chip. 
+
+Some common commands: 
+
+- Reset the device: `at`
+- Erase memory: `at&f 1`
+
 #### Misc
 
 If the system complains about ownership issues on DBus objects, have to turn off `deny ownership` setting on the default policy for `/etc/dbus-1/system.conf`.

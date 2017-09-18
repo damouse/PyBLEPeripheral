@@ -117,8 +117,8 @@
 //Set Appearance advertise 0 to suppress
 #define ADV_APPEARANCE                    1
 
-#define ADV_INTERVAL_MS                   100    //Advertise interval
-#define ADV_TIMEOUT_MS                    60000  //Advertise timeout
+#define ADV_INTERVAL_MS                   100     //Advertise interval
+#define ADV_TIMEOUT_MS                    600000  //Advertise timeout
 
 //Whitelist Policy in Adverts
 #define ADV_WHITELIST_FILTER_POLICY       ADV_FILTERPOLICY_ANY
@@ -938,7 +938,7 @@ function AddCharHrsMeas() as integer
 
   //AssertRC(rc, 927)
   //Create the Characteristic object
-  chProp = BLE_CHAR_PROPERTIES_NOTIFY
+  chProp = BLE_CHAR_PROPERTIES_NOTIFY | BLE_CHAR_PROPERTIES_WRITE
   rc = BleCharNew(chProp,BleHandleUuid16(0x2A37),mdAttr,mdCccd,mdSccd)
   AssertRC(rc, 931)
 
@@ -969,13 +969,17 @@ function AddCharHrsSensLoc() as integer
   //Create the metadata for the value attribute in the characteristic
   //Heart Rate attribute has variable length
   //++++
+
   mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN,BLE_ATTR_ACCESS_NONE,1,0,rc)
   AssertRC(rc, 960)
+
   //There is a CCCD in this characteristic
   mdCccd=BLE_CHAR_METADATA_ATTR_NOT_PRESENT
+
   //AssertRC(rc, 963)
   //There is no SCCD in this characteristic
   mdSccd = BLE_CHAR_METADATA_ATTR_NOT_PRESENT
+
   //AssertRC(rc, 966)
   //Create the Characteristic object
   chProp = BLE_CHAR_PROPERTIES_READ
