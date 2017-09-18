@@ -589,7 +589,7 @@ sub InitAdvReports(advFlags as integer)
   AssertRC(rc,  563)
 
   // So I feel like this should reference the advertisement report, not the scan report
-  rc = BleAdvRptAddUuid128(adRpt$, UUID_SERVICE)
+  rc = BleAdvRptAddUuid128(scRpt$, UUID_SERVICE)
   AssertRC(rc,  559)
 
   //Commit the advert and scan report to the scan
