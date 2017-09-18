@@ -165,7 +165,8 @@ UUID_SERVICE = BleHandleUuid128(uuidService$)
 #define BLE_INVALID_SERVICE_HANDLE                        0
 #define CIRCBUFFER_INVALID_HANDLE                         -1
 
-//Set BLE_DISCOVERABILITY_NONE if whitelist is enabled in BleAdvertStart()
+//Set BLE_DISCOVERABILITY_NONE if whitelist is enabled in 
+()
 //as the 4.0 spec says if whitelist is enabled then discoverability is not allowed
 #define BLE_DISCOVERABILITY_NONE                          0
 #define BLE_DISCOVERABILITY_LIMITED                       1
@@ -183,9 +184,9 @@ UUID_SERVICE = BleHandleUuid128(uuidService$)
 #define BLE_APPEARANCE_GENERIC_HEART_RATE_SENSOR          832
 #define BLE_APPEARANCE_HEART_RATE_SENSOR_HEART_RATE_BELT  833
 
-#define UUID_BATTERY_SERVICE                              0x180F
-#define UUID_DEVICE_INFORMATION_SERVICE                   0x180A
-#define UUID_HEART_RATE_SERVICE                           0x180D
+// #define UUID_BATTERY_SERVICE                              0x180F
+// #define UUID_DEVICE_INFORMATION_SERVICE                   0x180A
+// #define UUID_HEART_RATE_SERVICE                           0x180D
 
 #define BLE_SERVICE_SECONDARY                             0
 #define BLE_SERVICE_PRIMARY                               1
@@ -580,7 +581,7 @@ sub InitAdvReports(advFlags as integer)
   AssertRC(rc,  555)
 
   //Append the uuid list to the advert report
-  DbgMsg("Creating the advertisement report")
+  DbgMsgVal("Creating the advertisement report", advUuid[0])
   rc = BleAdvRptAddUuid16(adRpt$, advUuid[0], advUuid[1], advUuid[2], advUuid[3], advUuid[4], advUuid[5])
   AssertRC(rc,  559)
 
