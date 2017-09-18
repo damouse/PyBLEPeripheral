@@ -581,7 +581,7 @@ sub InitAdvReports(advFlags as integer)
 
   //Append the uuid list to the advert report
   DbgMsgVal("Creating the advertisement report", advUuid[0])
-  rc = BleAdvRptAddUuid16(adRpt$, advUuid[0], advUuid[1], advUuid[2], advUuid[3], advUuid[4], advUuid[5])
+  rc = BleAdvRptAddUuid128(adRpt$, advUuid[0])
   AssertRC(rc,  559)
 
   //Initialise an empty scan report
