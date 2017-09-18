@@ -580,6 +580,7 @@ sub InitAdvReports(advFlags as integer)
   AssertRC(rc,  555)
 
   //Append the uuid list to the advert report
+  DbgMsg("Creating the advertisement report")
   rc = BleAdvRptAddUuid16(adRpt$, advUuid[0], advUuid[1], advUuid[2], advUuid[3], advUuid[4], advUuid[5])
   AssertRC(rc,  559)
 
