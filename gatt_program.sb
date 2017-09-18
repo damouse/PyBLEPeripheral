@@ -75,18 +75,19 @@
 dim UUID_CHAR
 dim UUID_SERVICE
 
-dim uuid$
+dim uuidService$
+dim uuidChar$
 dim writableCharUuid
 
 // Char UUID
-uuid$ = "42a30eb7ae68454e9bc77d60b33b2584"
-uuid$ = StrDehexize$(uuid$)
-UUID_CHAR = BleHandleUuid128(uuid$)
+uuidChar$ = "42a30eb7ae68454e9bc77d60b33b2584"
+uuidChar$ = StrDehexize$(uuidChar$)
+UUID_CHAR = BleHandleUuid128(uuidChar$)
 
 // Service UUID
-uuid$ = "d4d9365fcd084024b670b0ec0d6632bd"
-uuid$ = StrDehexize$(uuid$)
-UUID_SERVICE = BleHandleUuid128(uuid$)
+uuidService$ = "d4d9365fcd084024b670b0ec0d6632bd"
+uuidService$ = StrDehexize$(uuidService$)
+UUID_SERVICE = BleHandleUuid128(uuidService$)
 
 
 #set $cmpif, 0x0 //Disable battery service

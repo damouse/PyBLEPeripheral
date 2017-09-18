@@ -9,6 +9,10 @@ noble.on('stateChange', function(state) {
 });
 
 noble.on('discover', function(peripheral) {
+  if (peripheral.advertisement.localName !== "LHR-BOT") {
+    return
+  }
+  
   console.log('peripheral discovered (' + peripheral.id +
               ' with address <' + peripheral.address +  ', ' + peripheral.addressType + '>,' +
               ' connectable ' + peripheral.connectable + ',' +
