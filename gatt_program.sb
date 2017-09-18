@@ -547,8 +547,8 @@ sub AddUuid(nUuid as integer)
   if advUuidCnt < 5 then
     advUuid[advUuidCnt]=nUuid
     
-    DbgMsgVal("Added service uuid at position", advUuidCnt)
-    DbgMsgVal("Uuid: ", nUuid)
+    // DbgMsgVal("Added service uuid at position", advUuidCnt)
+    // DbgMsgVal("Uuid: ", nUuid)
 
     advUuidCnt = advUuidCnt + 1
   else 
@@ -581,14 +581,15 @@ sub InitAdvReports(advFlags as integer)
   AssertRC(rc,  555)
 
   //Append the uuid list to the advert report
-  DbgMsgVal("Creating the advertisement report", advUuid[0])
+  // DbgMsgVal("Creating the advertisement report", advUuid[0])
   // rc = BleAdvRptAddUuid16(adRpt$, advUuid[0], advUuid[1], advUuid[2], advUuid[3], advUuid[4], advUuid[5])
 
   //Initialise an empty scan report
   rc = BleScanRptInit(scRpt$)
   AssertRC(rc,  563)
 
-  rc = BleAdvRptAddUuid128(scRpt$, UUID_SERVICE)
+  // So I feel like this should reference the advertisement report, not the scan report
+  rc = BleAdvRptAddUuid128(adRpt$, UUID_SERVICE)
   AssertRC(rc,  559)
 
   //Commit the advert and scan report to the scan
@@ -1032,7 +1033,7 @@ FUNCTION RegisterLhrChar()
  // rc=BleScanRptInit(scRpt$)
  // Add 1 service handle to scan report
  // rc=BleAdvRptAddUuid16(scRpt$,0x18EE,-1,-1,-1,-1,-1)
- //commit reports to GATT table - adRpt$ is empty
+ // commit reports to GATT table - adRpt$ is empty
  // rc=BleAdvRptsCommit(adRpt$,scRpt$)
  // rc=BleAdvertStart(0,addr$,20,300000,0)
 ENDFUNC rc
@@ -1083,7 +1084,7 @@ sub InitHrsService()
   rc = RegHrsService()
   AssertRC(rc,  1025)
   if rc==0 then
-    DbgMsg("Adding advertisement for service")
+    // DbgMsg("Adding advertisement for service")
     AddUuid(UUID_SERVICE)
   endif
 
