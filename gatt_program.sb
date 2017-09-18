@@ -993,7 +993,7 @@ endfunc rc
 
 
 //==============================================================================
-// Heart Service 
+// Heart Service
 //==============================================================================
 function RegHrsService() as integer
   dim rc
@@ -1003,7 +1003,7 @@ function RegHrsService() as integer
   dim writableCharUuid
   
   uuid$ = "d4d9365fcd084024b670b0ec0d6632bd"
-  // uuid$ = StrDehexize$(uuid$)
+  uuid$ = StrDehexize$(uuid$)
   writableCharUuid = BleHandleUuid128(uuid$)
 
   //Create a Heart Rate PRIMARY service attribure which has a uuid of 0x180D
