@@ -83,7 +83,7 @@
 #define ENABLE_DEBUG_PRINTS               1
 
 #define DEVICENAME                        "LAIRD_HRM"
-#define DEVICENAME_WRITABLE               1
+#define DEVICENAME_WRITABLE               1`
 #define APPEARANCE                        BLE_APPEARANCE_GENERIC_HEART_RATE_SENSOR
 #define MANF_NAME                         "Laird Technologies"
 #define MODELSTR                          "BL652"
@@ -1483,7 +1483,7 @@ if (AUTO_STARTUP & 2) != 0 then
 endif
 
 //Send user prompt for uart based command interface
-msg$="\n\r"
+msg$="LHR BLE Peripheral Starting Up\n\r"
 UartMsg(msg$)
 msg$=DEVICENAME
 UartMsg(msg$)
