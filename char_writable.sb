@@ -47,6 +47,13 @@ FUNCTION OnStartup()
     rc=BleServiceCommit(hSvc)
     AssertRC(rc, 48)
 
+    //
+    // Advertisements
+    //
+
+    rc=BleAdvRptInit(adRpt$,0x02,0,20)
+    AssertRc(rc, 55) 
+    
     //initialise scan report
     rc=BleScanRptInit(scRpt$) 
     AssertRC(rc, 52)
