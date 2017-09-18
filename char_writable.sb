@@ -58,7 +58,7 @@ FUNCTION OnStartup()
     AssertRC(rc, 52)
 
     // rc=BleAdvRptAddUuid16(scRpt$,0x18EE,-1,-1,-1,-1,-1)
-    rc=BleAdvRptAddUuid128(adRpt$, UUID_SERVICE) //,-1,-1,-1,-1,-1)
+    rc=BleAdvRptAddUuid128(scRpt$, UUID_SERVICE) //,-1,-1,-1,-1,-1)
     AssertRC(rc, 57)
 
     rc=BleAdvRptsCommit(adRpt$,scRpt$)
