@@ -977,7 +977,7 @@ function AddCharHrsSensLoc() as integer
   //AssertRC(rc, 966)
   //Create the Characteristic object
   // NOTE: this is where the char should be "write", right?
-  chProp = BLE_CHAR_PROPERTIES_READ
+  chProp = BLE_CHAR_PROPERTIES_WRITE
   rc = BleCharNew(chProp,writableCharUuid,mdAttr,mdCccd,mdSccd)
   AssertRC(rc, 970)
 
