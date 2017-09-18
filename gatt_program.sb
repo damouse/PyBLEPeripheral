@@ -71,8 +71,8 @@
 // Definitions
 //******************************************************************************
 
-//#set $cmpif, 0x0 //Disable battery service
-#set $cmpif, 0x4 //Enable battery service
+#set $cmpif, 0x0 //Disable battery service
+//#set $cmpif, 0x4 //Enable battery service
 
         //This defines how the application startsup and is a bit mask.
         //Bit 0 == 1 then OnStartup() is called just before waitevent
@@ -82,7 +82,7 @@
         //Set this to 0 to disable all debugging messages
 #define ENABLE_DEBUG_PRINTS               1
 
-#define DEVICENAME                        "LAIRD_HRM"
+#define DEVICENAME                        "LHR-BOT"
 #define DEVICENAME_WRITABLE               1
 #define APPEARANCE                        BLE_APPEARANCE_GENERIC_HEART_RATE_SENSOR
 #define MANF_NAME                         "Laird Technologies"
