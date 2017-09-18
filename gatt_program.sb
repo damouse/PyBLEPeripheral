@@ -1053,8 +1053,8 @@ function RegHrsService() as integer
 
   //Create the WRITE characteristic
   // rc = AddCharHrsSensLoc()
-  rc = RegisterLhrChar()
-  AssertRC(rc,  998)
+  // rc = RegisterLhrChar()
+  // AssertRC(rc,  998)
   
   //Commit Heart Rate service to GATT table
   rc=BleServiceCommit(shHrs)
