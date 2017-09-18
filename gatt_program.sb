@@ -1503,11 +1503,12 @@ endfunc 1
 // This handler is called when a remote peer writes to a characteristic
 //==============================================================================
 FUNCTION HandlerCharVal(BYVAL charHandle, BYVAL offset, BYVAL len)
-  DIM s$
+  DIM s$, rc
   IF charHandle == hMyChar THEN
-    PRINT "\n";len;" byte(s) have been written to char value attribute from offset ";offset
-    rc=BleCharValueRead(hMyChar,s$)
-    PRINT "\nNew Char Value: ";s$
+    // PRINT "\n";len;" byte(s) have been written to char value attribute from offset ";offset
+    rc=BleCharValueRead(hMyChar, s$)
+    DbgMsg("\nNew Char Value: ")
+    DbgMsg(s$)
   ENDIF
 
  // CloseConnections()
