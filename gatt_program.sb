@@ -1006,7 +1006,8 @@ function RegHrsService() as integer
   uuid$ = StrDehexize$(uuid$)
   writableCharUuid = BleHandleUuid128(uuid$)
 
-  DbgMsgVal("Dehexized string: ", uuid$)
+  DbgMsgVal("Dehexized string: ")
+  DbgMsgVal(uuid$)
 
   //Create a Heart Rate PRIMARY service attribure which has a uuid of 0x180D
   rc = BleServiceNew(BLE_SERVICE_PRIMARY,writableCharUuid,shHrs)
