@@ -588,7 +588,6 @@ sub InitAdvReports(advFlags as integer)
   rc = BleScanRptInit(scRpt$)
   AssertRC(rc,  563)
 
-  // So I feel like this should reference the advertisement report, not the scan report
   rc = BleAdvRptAddUuid128(scRpt$, UUID_SERVICE)
   AssertRC(rc,  559)
 
