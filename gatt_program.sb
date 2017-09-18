@@ -74,16 +74,16 @@
 //#set $cmpif, 0x0 //Disable battery service
 #set $cmpif, 0x4 //Enable battery service
 
-//This defines how the application startsup and is a bit mask.
-//Bit 0 == 1 then OnStartup() is called just before waitevent
-//Bit 1 == 1 then StartAds() is called just before waitevent
+        //This defines how the application startsup and is a bit mask.
+        //Bit 0 == 1 then OnStartup() is called just before waitevent
+        //Bit 1 == 1 then StartAds() is called just before waitevent
 #define AUTO_STARTUP                      3
 
-//Set this to 0 to disable all debugging messages
+        //Set this to 0 to disable all debugging messages
 #define ENABLE_DEBUG_PRINTS               1
 
 #define DEVICENAME                        "LAIRD_HRM"
-#define DEVICENAME_WRITABLE               1`
+#define DEVICENAME_WRITABLE               1
 #define APPEARANCE                        BLE_APPEARANCE_GENERIC_HEART_RATE_SENSOR
 #define MANF_NAME                         "Laird Technologies"
 #define MODELSTR                          "BL652"
@@ -91,52 +91,46 @@
 #define HWREV                             "HwRev1.0"
 #define SWREV                             "SwRev1.0"
 #define SYSID                             "\01\02\03\04\05\06\07\08"
-//#define SYSID                             "@" 
+//#define SYSID                             "@"
 #define REGLIST                           "\DE\AD\C0\DE"
 //#define REGLIST                           ""
 #define PNPID                             "\01\04\BF\03\20\00\01"
 //#define PNPID                             ""
 #define CHAR_CR                           13
 
-//Minimum acceptable connection interval (0.5 seconds)
+        //Minimum acceptable connection interval (0.5 seconds)
 #define MIN_CONN_INTERVAL                 100000
-
-//Maximum acceptable connection interval (1 second).
+        //Maximum acceptable connection interval (1 second).
 #define MAX_CONN_INTERVAL                 125000
-
-//Slave latency -- number of conn events that can be missed
+        //Slave latency -- number of conn events that can be missed
 #define SLAVE_LATENCY                     1
-
-//Connection supervisory timeout (4 seconds) - max 32 seconds
+        //Connection supervisory timeout (4 seconds) - max 32 seconds
 #define CONN_SUP_TIMEOUT                  4000000
-
-//DiscoverableMode, set to BLE_DISCOVERABILITY_xxx
+        //DiscoverableMode, set to BLE_DISCOVERABILITY_xxx
 #define DISCOVERY_MODE                    BLE_DISCOVERABILITY_GENERAL
 #define MAX_DEVNAME_CHRS                  10
-
-//Set Appearance advertise 0 to suppress
+        //Set Appearance advertise 0 to suppress
 #define ADV_APPEARANCE                    1
 
-#define ADV_INTERVAL_MS                   100     //Advertise interval
-#define ADV_TIMEOUT_MS                    600000  //Advertise timeout
+#define ADV_INTERVAL_MS                   100    //Advertise interval
+#define ADV_TIMEOUT_MS                    60000  //Advertise timeout
 
-//Whitelist Policy in Adverts
+        //Whitelist Policy in Adverts
 #define ADV_WHITELIST_FILTER_POLICY       ADV_FILTERPOLICY_ANY
 
-//Minimum long term key size in octets
+        //Minimum long term key size in octets
 #define MIN_LTK_SIZE                      8
-
-//Maximum long term key size in octets
+        //Maximum long term key size in octets
 #define MAX_LTK_SIZE                      16
 
-//Set this to non-zero to enable notify on batt service
+        //Set this to non-zero to enable notify on batt service
 #define BATT_NOTIFY                       0
 #define BATT_INIT_LEVEL_PERC              100
 
-//This sets the pairing i/o capability using bonding
+        //This sets the pairing i/o capability using bonding
 #define PAIRING_IOCAPABILITY              BLE_IOCAPABILITY_NONE
 
-//Connection Update Negotiation paramters
+        //Connection Update Negotiation paramters
 #define FIRST_CONN_PARAMS_UPDATE_DELAY    5000
 #define NEXT_CONN_PARAMS_UPDATE_DELAY     5000
 #define MAX_CONN_PARAMS_UPDATE_DELAY      15000
@@ -284,46 +278,46 @@ endsub
 // Global Variable Declarations
 //******************************************************************************
 
-dim advState//Will be 0 if not advertising, 1,2,3,4 for the four advert types
-dim advType //As per ADV_ in ble.sblib
-dim addr$   //Peer address for Directed Adverts (MSB first) and exactly 6 bytes long
-dim advInt  //Adv interval in milliseconds
-dim advTmout//Adv timeout in milliseconds
-dim advFilPol       //Adv filter policy - see ADV_FILTERPOLICY_xxx in blelib.sblib
-            // 0 = Any
-            // 1 = Filter Scan Request
-            // 2 = Filter Connection Request
-            // 3 = Both
+dim advState                //Will be 0 if not advertising, 1,2,3,4 for the four advert types
+dim advType                 //As per ADV_ in ble.sblib
+dim addr$                   //Peer address for Directed Adverts (MSB first) and exactly 6 bytes long
+dim advInt                  //Adv interval in milliseconds
+dim advTmout                //Adv timeout in milliseconds
+dim advFilPol               //Adv filter policy - see ADV_FILTERPOLICY_xxx in blelib.sblib
+                            // 0 = Any
+                            // 1 = Filter Scan Request
+                            // 2 = Filter Connection Request
+                            // 3 = Both
 
-dim adRpt$ as string//Contains the most recent Advertise report
-dim scRpt$ as string//Contains the most recent scan report
-dim advUuid[6]      //These are the uuid's that are exposed
-dim advUuidCnt      //Uuid Counts for advert report
+dim adRpt$ as string        //Contains the most recent Advertise report
+dim scRpt$ as string        //Contains the most recent scan report
+dim advUuid[6]              //These are the uuid's that are exposed
+dim advUuidCnt              //Uuid Counts for advert report
 
-dim minint  //Minimum interval range is 7500us to 4000000us
-dim maxint  //Minimum interval range is 7500us to 4000000us
-dim sprtout //Link supervision timeout max value 32000000us
-dim slatncy //Slave latency 0..N where N*Interval must be less than link
-            //Supervision timeout
-dim hConn   //Connection handle
+dim minint                  //Minimum interval range is 7500us to 4000000us
+dim maxint                  //Minimum interval range is 7500us to 4000000us
+dim sprtout                 //Link supervision timeout max value 32000000us
+dim slatncy                 //Slave latency 0..N where N*Interval must be less than link
+                            //Supervision timeout
+dim hConn                   //Connection handle
 
-dim shHrs as integer//Service handle
+dim shHrs as integer        //Service handle
 dim chHrsMeas as integer    //Heart Rate Measurement Characteristic Handle
 dim chHrsLoc as integer     //Heart Rate Sensor Location Handle
 
-dim hrtRate //Heart rate in beats per minute
-dim sensLoc //Heart sensor location
-dim sensCntct       //Heart sensor sensor contact status on/off
-dim hrs$ as string  //hrs measurement attribute
-dim hRing   //Handle for the rr ring buffer
+dim hrtRate                 //Heart rate in beats per minute
+dim sensLoc                 //Heart sensor location
+dim sensCntct               //Heart sensor sensor contact status on/off
+dim hrs$ as string          //hrs measurement attribute
+dim hRing                   //Handle for the rr ring buffer
 
-dim stRsp$ as string//Uart rx data is stored here
+dim stRsp$ as string        //Uart rx data is stored here
 dim ok$,er$
 dim msg$
-dim mnltk   //Min size of ltk
-dim mxltk   //Max size of ltk
-dim advFlags//Value for flags AD
-dim dn$     //Device name
+dim mnltk                   //Min size of ltk
+dim mxltk                   //Max size of ltk
+dim advFlags                //Value for flags AD
+dim dn$                     //Device name
 
 //The following variables are only enabled if the battery service is enabled.
 #cmpif 0x04 : dim shBat       //Battery level service handle
@@ -366,7 +360,7 @@ er$    ="\nERROR\r\n>"
 
 mnltk    = MIN_LTK_SIZE
 mxltk    = MAX_LTK_SIZE
-advFlags = DISCOVERY_MODE      //Can be changed via 'fg' command
+advFlags = DISCOVERY_MODE                      //Can be changed via 'fg' command
 
 sensLoc  = BLE_HRS_BODY_SENSOR_LOCATION_CHEST  //See lib/ble.sblib for more defines
 
@@ -740,38 +734,35 @@ function AddCharBatLevel(byval btlvl as integer, byval fNfy as integer) as integ
 #cmpif 0x04 :     btLvl = 100
 #cmpif 0x04 :   endif
 
-//Create the Battery Level Characteristic which has a UUID of 0x2A19
+                //Create the Battery Level Characteristic which has a UUID of 0x2A19
 #cmpif 0x04 :   dim mdAttr
 #cmpif 0x04 :   dim mdCccd
 #cmpif 0x04 :   dim mdSccd
 #cmpif 0x04 :   dim chProp 
-#cmpif 0x04 :   dim format : format = 0x04    //uint8 - Unsigned 8-bit integer
+#cmpif 0x04 :   dim format : format = 0x04            //uint8 - Unsigned 8-bit integer
 #cmpif 0x04 :   dim exponent : exponent = 0
-#cmpif 0x04 :   dim unit : unit = 0x27AD      //Percentage
+#cmpif 0x04 :   dim unit : unit = 0x27AD              //Percentage
 #cmpif 0x04 :   dim namespace : namespace = 0x01      //Bluetooth SIG
 #cmpif 0x04 :   dim namespacedesc : namespacedesc = 0
 
-//Create the metadata for the value attribure in the characteristic
+                //Create the metadata for the value attribure in the characteristic
 #cmpif 0x04 :   mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN,BLE_ATTR_ACCESS_NONE,1,0,rc)
 #cmpif 0x04 :   AssertRC(rc, 750)
-
-//There is no CCCD in this characteristic
+                //There is no CCCD in this characteristic
 #cmpif 0x04 :   mdCccd = BleAttrMetadata(BLE_ATTR_ACCESS_OPEN,BLE_ATTR_ACCESS_OPEN,1,0,rc)
 #cmpif 0x04 :   AssertRC(rc, 753)
-
-//There is no SCCD in this characteristic
+                //There is no SCCD in this characteristic
 #cmpif 0x04 :   mdSccd = BLE_CHAR_METADATA_ATTR_NOT_PRESENT
-
-//Create the Characteristic object
+                //Create the Characteristic object
 #cmpif 0x04 :   chProp = BLE_CHAR_PROPERTIES_READ | BLE_CHAR_PROPERTIES_NOTIFY
 #cmpif 0x04 :   rc = BleCharNew(chProp,BleHandleUuid16(0x2A19),mdAttr,mdCccd,mdSccd)
 #cmpif 0x04 :   AssertRC(rc, 759)
 
-//Add the PRESENTATION FORMAT Descriptor
+                //Add the PRESENTATION FORMAT Descriptor
 #cmpif 0x04 :   rc = BleCharDescPrstnFrmt(format,exponent,unit,namespace,namespacedesc)
 #cmpif 0x04 :   AssertRC(rc, 763)
 
-//Commit the characteristic
+                //Commit the characteristic
 #cmpif 0x04 :   rc = BleEncode8(batlvl$,btlvl,0)
 #cmpif 0x04 :   rc = BleCharCommit(shBat,batlvl$,chBatlvl)
 #cmpif 0x04 :   AssertRC(rc, 768)
@@ -783,15 +774,15 @@ endfunc rc
 function RegBatService(byval btlvl as integer, byval fNfy as integer) as integer
     dim rc
 
-//Create a battery PRIMARY service attribute which has a uuid of 0x180F
+                //Create a battery PRIMARY service attribute which has a uuid of 0x180F
 #cmpif 0x04 :   rc = BleServiceNew(BLE_SERVICE_PRIMARY,BleHandleUuid16(0x180F),shBat)
 #cmpif 0x04 :   AssertRC(rc, 779)
 
-//Create the Battery Level Characteristic which has a UUID of 0x2A19
+                //Create the Battery Level Characteristic which has a UUID of 0x2A19
 #cmpif 0x04 :   rc = AddCharBatLevel(btlvl,fNfy)
 #cmpif 0x04 :   AssertRC(rc, 783)
 
-//Commit battery service to GATT table
+                //Commit battery service to GATT table
 #cmpif 0x04 :   rc=BleServiceCommit(shBat)
 #cmpif 0x04 :   AssertRC(rc, 787)
 
@@ -928,24 +919,20 @@ function AddCharHrsMeas() as integer
   //++++
   mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_NONE,BLE_ATTR_ACCESS_NONE,MAX_HRM_LEN,1,rc)
   AssertRC(rc, 921)
-
   //There is a CCCD in this characteristic
   mdCccd=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN,BLE_ATTR_ACCESS_OPEN,2,0,rc)
   AssertRC(rc, 924)
-
   //There is no SCCD in this characteristic
   mdSccd = BLE_CHAR_METADATA_ATTR_NOT_PRESENT
-
   //AssertRC(rc, 927)
   //Create the Characteristic object
-  chProp = BLE_CHAR_PROPERTIES_NOTIFY | BLE_CHAR_PROPERTIES_WRITE
+  chProp = BLE_CHAR_PROPERTIES_NOTIFY
   rc = BleCharNew(chProp,BleHandleUuid16(0x2A37),mdAttr,mdCccd,mdSccd)
   AssertRC(rc, 931)
 
   //++++
   //Commit the characteristic
   //++++
-  
   HrsEncode()
   rc = BleCharCommit(shHrs,hrs$,chHrsMeas)
   AssertRC(rc, 938)
@@ -969,17 +956,13 @@ function AddCharHrsSensLoc() as integer
   //Create the metadata for the value attribute in the characteristic
   //Heart Rate attribute has variable length
   //++++
-
   mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN,BLE_ATTR_ACCESS_NONE,1,0,rc)
   AssertRC(rc, 960)
-
   //There is a CCCD in this characteristic
   mdCccd=BLE_CHAR_METADATA_ATTR_NOT_PRESENT
-
   //AssertRC(rc, 963)
   //There is no SCCD in this characteristic
   mdSccd = BLE_CHAR_METADATA_ATTR_NOT_PRESENT
-
   //AssertRC(rc, 966)
   //Create the Characteristic object
   chProp = BLE_CHAR_PROPERTIES_READ
@@ -1483,7 +1466,7 @@ if (AUTO_STARTUP & 2) != 0 then
 endif
 
 //Send user prompt for uart based command interface
-msg$="LHR BLE Peripheral Starting Up\n\r"
+msg$="LHR BLE Command Peripheral\n\r"
 UartMsg(msg$)
 msg$=DEVICENAME
 UartMsg(msg$)
