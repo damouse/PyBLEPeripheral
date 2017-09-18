@@ -42,7 +42,7 @@ FUNCTION OnStartup()
 
     //Add 1 service handle to scan report
     // rc=BleAdvRptAddUuid16(scRpt$,0x18EE,-1,-1,-1,-1,-1)
-    rc=BleAdvRptAddUuid128(scRpt$, UUID_SERVICE,-1,-1,-1,-1,-1)
+    rc=BleAdvRptAddUuid128(scRpt$, UUID_SERVICE) //,-1,-1,-1,-1,-1)
 
     //commit reports to GATT table - adRpt$ is empty
     rc=BleAdvRptsCommit(adRpt$,scRpt$)
