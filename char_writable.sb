@@ -19,6 +19,12 @@ uuidService$ = "d4d9365fcd084024b670b0ec0d6632bd"
 uuidService$ = StrDehexize$(uuidService$)
 UUID_SERVICE = BleHandleUuid128(uuidService$)
 
+sub AssertRC(byval rc as integer, byval tag as integer)
+  if (rc!=0) then
+    print "Failed with ";integer.h' rc;" at tag ";tag;"\n"
+  endif
+endsub
+
 //==============================================================================
 // Initialise and instantiate service, characteristic, 
 //==============================================================================
@@ -27,26 +33,36 @@ FUNCTION OnStartup()
 
     //commit service
     rc=BleServiceNew(1, UUID_SERVICE, hSvc)
+    AssertRC(rc, 35)
 
     //initialise char, write/read enabled, accept signed writes
     rc=BleCharNew(0x0A, UUID_CHAR, BleAttrMetaData(1,1,20,0,rc),0,0)     
+    AssertRC(rc, 40)
 
     //commit char initialised above, with initial value "hi" to service 'hSvc'
     rc=BleCharCommit(hSvc,attr$,hMyChar)
+    AssertRC(rc, 44)
 
     //commit changes to service
     rc=BleServiceCommit(hSvc)
+    AssertRC(rc, 48)
 
     //initialise scan report
     rc=BleScanRptInit(scRpt$) 
+    AssertRC(rc, 52)
 
     //Add 1 service handle to scan report
     // rc=BleAdvRptAddUuid16(scRpt$,0x18EE,-1,-1,-1,-1,-1)
     rc=BleAdvRptAddUuid128(scRpt$, UUID_SERVICE) //,-1,-1,-1,-1,-1)
+    AssertRC(rc, 57)
 
     //commit reports to GATT table - adRpt$ is empty
     rc=BleAdvRptsCommit(adRpt$,scRpt$)
+    AssertRC(rc, 61)
+
     rc=BleAdvertStart(0,addr$,150,0,0)
+    AssertRC(rc, 64)
+
 ENDFUNC rc
 
 //==============================================================================
@@ -61,7 +77,11 @@ FUNCTION HndlrChar(BYVAL chrHndl, BYVAL offset, BYVAL len)
         PRINT "\nNew Char Value: ";s$
     ENDIF
     rc=BleAdvertStop()
+    AssertRC(rc, 80)
+
     rc=BleDisconnect(conHndl)
+    AssertRC(rc, 83)
+
 ENDFUNC 0
 
 //==============================================================================
