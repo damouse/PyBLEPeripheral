@@ -545,7 +545,13 @@ endfunc advState
 sub AddUuid(nUuid as integer)
   if advUuidCnt < 5 then
     advUuid[advUuidCnt]=nUuid
+    
+    DbgMsgVal("Added service uuid at position", advUuidCnt)
+    DbgMsgVal("Uuid: ", nUuid)
+
     advUuidCnt = advUuidCnt + 1
+  else 
+    DbgMsg("Unable to add UUID-- overflow")
   endif
 endsub
 
