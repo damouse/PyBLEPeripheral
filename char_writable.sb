@@ -1,0 +1,85 @@
+//Example :: BleCharValueRead.sb
+DIM hMyChar,rc, conHndl
+
+// Create the UUID
+dim UUID_CHAR
+dim UUID_SERVICE
+
+dim uuidService$
+dim uuidChar$
+dim writableCharUuid
+
+// Char UUID
+uuidChar$ = "42a30eb7ae68454e9bc77d60b33b2584"
+uuidChar$ = StrDehexize$(uuidChar$)
+UUID_CHAR = BleHandleUuid128(uuidChar$)
+
+// Service UUID
+uuidService$ = "d4d9365fcd084024b670b0ec0d6632bd"
+uuidService$ = StrDehexize$(uuidService$)
+UUID_SERVICE = BleHandleUuid128(uuidService$)
+
+//==============================================================================
+// Initialise and instantiate service, characteristic, 
+//==============================================================================
+FUNCTION OnStartup()
+    DIM rc, hSvc, scRpt$, adRpt$, addr$, attr$ : attr$="Hi"
+
+    //commit service
+    rc=BleServiceNew(1, UUID_SERVICE, hSvc)
+
+    //initialise char, write/read enabled, accept signed writes
+    rc=BleCharNew(0x0A, UUID_CHAR, BleAttrMetaData(1,1,20,0,rc),0,0)     
+
+    //commit char initialised above, with initial value "hi" to service 'hSvc'
+    rc=BleCharCommit(hSvc,attr$,hMyChar)
+
+    //commit changes to service
+    rc=BleServiceCommit(hSvc)
+
+    //initialise scan report
+    rc=BleScanRptInit(scRpt$) 
+
+    //Add 1 service handle to scan report
+    rc=BleAdvRptAddUuid16(scRpt$,0x18EE,-1,-1,-1,-1,-1)
+
+    //commit reports to GATT table - adRpt$ is empty
+    rc=BleAdvRptsCommit(adRpt$,scRpt$)
+    rc=BleAdvertStart(0,addr$,150,0,0)
+ENDFUNC rc
+
+//==============================================================================
+// New char value handler
+//==============================================================================  
+FUNCTION HndlrChar(BYVAL chrHndl, BYVAL offset, BYVAL len)  
+    dim s$
+    IF chrHndl == hMyChar THEN
+        PRINT "\n";len;" byte(s) have been written to char value attribute from offset ";offset
+        
+        rc=BleCharValueRead(hMyChar,s$)
+        PRINT "\nNew Char Value: ";s$
+    ENDIF
+    rc=BleAdvertStop()
+    rc=BleDisconnect(conHndl)
+ENDFUNC 0
+
+//==============================================================================
+// Get the connnection handle 
+//==============================================================================
+FUNCTION HndlrBleMsg(BYVAL nMsgId, BYVAL nCtn)
+    conHndl=nCtn
+ENDFUNC 1
+
+IF OnStartup()==0 THEN
+    DIM at$ : rc = BleCharValueRead(hMyChar,at$)
+    PRINT "\nCharacteristic value attribute: ";at$;"\nConnect to BL652 and send a new value\n"
+ELSE
+    PRINT "\nFailure OnStartup"
+ENDIF
+
+ONEVENT EVCHARVAL  CALL HndlrChar
+ONEVENT EVBLEMSG  CALL HndlrBleMsg
+
+WAITEVENT
+
+PRINT "\nExiting..."
