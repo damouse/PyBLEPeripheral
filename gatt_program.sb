@@ -72,8 +72,8 @@
 //******************************************************************************
 
 // Create the UUID
-dim LHR_CHARWRITABLE_UUID
-dim LHR_SERVICE_UUID
+dim UUID_CHAR
+dim UUID_SERVICE
 
 dim uuid$
 dim writableCharUuid
@@ -81,12 +81,12 @@ dim writableCharUuid
 // Char UUID
 uuid$ = "42a30eb7ae68454e9bc77d60b33b2584"
 uuid$ = StrDehexize$(uuid$)
-LHR_CHARWRITABLE_UUID = BleHandleUuid128(uuid$)
+UUID_CHAR = BleHandleUuid128(uuid$)
 
 // Service UUID
 uuid$ = "d4d9365fcd084024b670b0ec0d6632bd"
 uuid$ = StrDehexize$(uuid$)
-LHR_SERVICE_UUID = BleHandleUuid128(uuid$)
+UUID_SERVICE = BleHandleUuid128(uuid$)
 
 
 #set $cmpif, 0x0 //Disable battery service
@@ -988,7 +988,7 @@ function AddCharHrsSensLoc() as integer
   //Create the Characteristic object
   // NOTE: this is where the char should be "write", right?
   chProp = BLE_CHAR_PROPERTIES_WRITE
-  rc = BleCharNew(chProp, LHR_CHARWRITABLE_UUID, mdAttr,mdCccd,mdSccd)
+  rc = BleCharNew(chProp, UUID_CHAR, mdAttr,mdCccd,mdSccd)
   AssertRC(rc, 970)
 
   //++++
@@ -1008,7 +1008,7 @@ function RegHrsService() as integer
   dim rc
 
   //Create a Heart Rate PRIMARY service attribure which has a uuid of 0x180D
-  rc = BleServiceNew(BLE_SERVICE_PRIMARY, LHR_SERVICE_UUID, shHrs)
+  rc = BleServiceNew(BLE_SERVICE_PRIMARY, UUID_SERVICE, shHrs)
   AssertRC(rc, 990)
 
   //Create the Heart Rate Measurement Characteristic which has a UUID of 0x2A37
@@ -1046,7 +1046,7 @@ sub InitHrsService()
   rc = RegHrsService()
   AssertRC(rc, 1025)
   if rc==0 then
-     AddUuid(LHR_SERVICE_UUID)
+     AddUuid(UUID_SERVICE)
   endif
 
 endsub
