@@ -166,7 +166,6 @@ UUID_SERVICE = BleHandleUuid128(uuidService$)
 #define CIRCBUFFER_INVALID_HANDLE                         -1
 
 //Set BLE_DISCOVERABILITY_NONE if whitelist is enabled in 
-()
 //as the 4.0 spec says if whitelist is enabled then discoverability is not allowed
 #define BLE_DISCOVERABILITY_NONE                          0
 #define BLE_DISCOVERABILITY_LIMITED                       1
