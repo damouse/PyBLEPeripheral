@@ -972,7 +972,7 @@ function AddCharHrsSensLoc() as integer
   //Create the Characteristic object
   // NOTE: this is where the char should be "write", right?
   chProp = BLE_CHAR_PROPERTIES_READ
-  rc = BleCharNew(chProp,BleHandleUuid16(LHR_CHAR_UUID),mdAttr,mdCccd,mdSccd)
+  rc = BleCharNew(chProp,BleHandleUuid128(LHR_CHAR_UUID),mdAttr,mdCccd,mdSccd)
   AssertRC(rc, 970)
 
   //++++
@@ -992,7 +992,7 @@ function RegHrsService() as integer
   dim rc
 
   //Create a Heart Rate PRIMARY service attribure which has a uuid of 0x180D
-  rc = BleServiceNew(BLE_SERVICE_PRIMARY,BleHandleUuid16(LHR_SERVICE_UUID),shHrs)
+  rc = BleServiceNew(BLE_SERVICE_PRIMARY,BleHandleUuid128(LHR_SERVICE_UUID),shHrs)
   AssertRC(rc, 990)
 
   //Create the Heart Rate Measurement Characteristic which has a UUID of 0x2A37
