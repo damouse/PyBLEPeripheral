@@ -71,9 +71,6 @@
 // Definitions
 //******************************************************************************
 
-#define LHR_SERVICE_UUID      0xd4d9365fcd084024b670b0ec0d6632bd
-#define LHR_CHAR_UUID         0x42a30eb7ae68454e9bc77d60b33b2584
-
 //#set $cmpif, 0x0 //Disable battery service
 #set $cmpif, 0x4 //Enable battery service
 
@@ -956,6 +953,16 @@ function AddCharHrsSensLoc() as integer
   dim chProp
   dim attr$
 
+  // Create the UUID
+  #define LHR_SERVICE_UUID      0xd4d9365fcd084024b670b0ec0d6632bd
+
+  dim uuid$
+  dim writableCharUuid
+
+  uuid$ = "42a30eb7ae68454e9bc77d60b33b2584"
+  uuid$ = StrDehexize$(uuid$)
+  writableCharUuid = BleHandleUuid128(uuid$)
+
   //++++
   //Create the metadata for the value attribute in the characteristic
   //Heart Rate attribute has variable length
@@ -972,7 +979,7 @@ function AddCharHrsSensLoc() as integer
   //Create the Characteristic object
   // NOTE: this is where the char should be "write", right?
   chProp = BLE_CHAR_PROPERTIES_READ
-  rc = BleCharNew(chProp,BleHandleUuid128(LHR_CHAR_UUID),mdAttr,mdCccd,mdSccd)
+  rc = BleCharNew(chProp,writableCharUuid,mdAttr,mdCccd,mdSccd)
   AssertRC(rc, 970)
 
   //++++
@@ -991,8 +998,16 @@ endfunc rc
 function RegHrsService() as integer
   dim rc
 
+  // Create the UUID
+  dim uuid$
+  dim writableCharUuid
+  
+  uuid$ = "d4d9365fcd084024b670b0ec0d6632bd"
+  uuid$ = StrDehexize$(uuid$)
+  writableCharUuid = BleHandleUuid128(uuid$)
+
   //Create a Heart Rate PRIMARY service attribure which has a uuid of 0x180D
-  rc = BleServiceNew(BLE_SERVICE_PRIMARY,BleHandleUuid128(LHR_SERVICE_UUID),shHrs)
+  rc = BleServiceNew(BLE_SERVICE_PRIMARY,writableCharUuid,shHrs)
   AssertRC(rc, 990)
 
   //Create the Heart Rate Measurement Characteristic which has a UUID of 0x2A37
