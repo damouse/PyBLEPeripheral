@@ -997,7 +997,7 @@ function AddCharHrsSensLoc() as integer
   //AssertRC(rc,  966)
   //Create the Characteristic object
   // NOTE: this is where the char should be "write",  right?
-  chProp = BLE_CHAR_PROPERTIES_READ | BLE_CHAR_PROPERTIES_WRITE
+  chProp = BLE_CHAR_PROPERTIES_READ + BLE_CHAR_PROPERTIES_WRITE
   rc = BleCharNew(chProp, UUID_CHAR, mdAttr, mdCccd, mdSccd)
   AssertRC(rc,  970)
 
@@ -1022,8 +1022,8 @@ function RegHrsService() as integer
   AssertRC(rc,  990)
 
   //Create the Heart Rate Measurement Characteristic which has a UUID of 0x2A37
-  rc = AddCharHrsMeas()
-  AssertRC(rc,  994)
+  // rc = AddCharHrsMeas()
+  // AssertRC(rc,  994)
 
   //Create the READ characteristic
   rc = AddCharHrsSensLoc()
