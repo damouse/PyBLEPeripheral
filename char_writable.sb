@@ -1,23 +1,11 @@
 //Example :: BleCharValueRead.sb
 DIM hMyChar,rc, conHndl
 
-// Create the UUID
 dim UUID_CHAR
 dim UUID_SERVICE
 
-dim uuidService$
-dim uuidChar$
-dim writableCharUuid
-
-// Char UUID
-uuidChar$ = "42a30eb7ae68454e9bc77d60b33b2584"
-uuidChar$ = StrDehexize$(uuidChar$)
-UUID_CHAR = BleHandleUuid128(uuidChar$)
-
-// Service UUID
-uuidService$ = "d4d9365fcd084024b670b0ec0d6632bd"
-uuidService$ = StrDehexize$(uuidService$)
-UUID_SERVICE = BleHandleUuid128(uuidService$)
+UUID_SERVICE = 0x180B
+UUID_CHAR = 0x2A37
 
 sub AssertRC(byval rc as integer, byval tag as integer)
   if (rc!=0) then
@@ -51,20 +39,19 @@ FUNCTION OnStartup()
     // Advertisements
     //
 
-    rc=BleAdvRptInit(adRpt$,0x02,0,20)
+    rc=BleAdvRptInit(adRpt$, 0x02, 1, 20)
     AssertRc(rc, 55) 
 
     rc=BleScanRptInit(scRpt$) 
     AssertRC(rc, 52)
 
-    // rc=BleAdvRptAddUuid16(scRpt$,0x18EE,-1,-1,-1,-1,-1)
-    rc=BleAdvRptAddUuid128(scRpt$, UUID_SERVICE) //,-1,-1,-1,-1,-1)
+    rc=BleAdvRptAddUuid16(adRpt$, UUID_SERVICE,-1,-1,-1,-1,-1)
     AssertRC(rc, 57)
 
     rc=BleAdvRptsCommit(adRpt$,scRpt$)
     AssertRC(rc, 61)
 
-    rc=BleAdvertStart(0, addr$, 150, 0, 0)
+    rc=BleAdvertStart(0, addr$, 20, 3000000, 0)
     AssertRC(rc, 64)
 
 ENDFUNC rc
