@@ -993,8 +993,10 @@ function AddCharHrsSensLoc() as integer
   //++++
   mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN, BLE_ATTR_ACCESS_NONE, 1, 0, rc)
   AssertRC(rc,  960)
+
   //There is a CCCD in this characteristic
   mdCccd=BLE_CHAR_METADATA_ATTR_NOT_PRESENT
+
   //AssertRC(rc,  963)
   //There is no SCCD in this characteristic
   mdSccd = BLE_CHAR_METADATA_ATTR_NOT_PRESENT
@@ -1002,7 +1004,7 @@ function AddCharHrsSensLoc() as integer
   //AssertRC(rc,  966)
   //Create the Characteristic object
   // NOTE: this is where the char should be "write",  right?
-  chProp = BLE_CHAR_PROPERTIES_READ + BLE_CHAR_PROPERTIES_WRITE
+  chProp = BLE_CHAR_PROPERTIES_READ | BLE_CHAR_PROPERTIES_WRITE
   // rc = BleCharNew(chProp,  UUID_CHAR,  mdAttr, mdCccd, mdSccd)
   rc = BleCharNew(chProp, BleHandleUuid16(0x2A38), mdAttr, mdCccd, mdSccd)
 
