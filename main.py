@@ -29,7 +29,8 @@ SERIAL_RTSCTS = 1
 
 class SerialConnection(object):
     '''
-    Threaded and Queued wrapper around a Serial connection.
+    Manages the serial connection on its own internal thread, using a 
+    queue to batch up messages that arrive from the controller. 
     '''
 
     def __init__(self, port):
@@ -47,61 +48,99 @@ class SerialConnection(object):
         self.thread.start()
 
     def close(self):
-        ''' Kill the thread'''
-        pass
+        ''' Kill the outbound thread, if it exists '''
+        if not self.is_open:
+            return
 
-    def read(self):
-        ''' Reads a line from the serial connection. Blocks on concurrent reads or writes'''
-        # with self._lock:
-        #     return self._serial.readline()
+        self.is_open = False
+        self.thread.join()
 
-        print("Starting Read")
+    def write(self, msg):
+        ''' Write a message to the serial connection '''
+        msg += '\r'
+        self._serial.write(msg.encode())
 
-        while True:
+    def spinwait(self):
+        ''' Spins on the inbound queue, returning messages as they arrive '''
+        while self.is_open:
+            msg = self.queue.get()
+            print("Have message: ", msg)
+
+    def _read(self):
+        ''' Starts the internal read loop '''
+        while self.is_open:
             while self._serial.in_waiting:
                 x = self._serial.readline()
                 x = x.decode()
                 print(x)
                 self.queue.put(x)
 
-    def write(self, msg):
-        ''' Write a message to the serial connection. Blocks on concurrent reads or writes'''
-        msg += '\r'
-        self._serial.write(msg.encode())
 
-    def waiting(self):
-        return self._serial.in_waiting
+class ControllerManager(object):
+    '''
+    Manages the smartBASIC controller using the SerialConnection class above
+    for communication
+    '''
 
-    def blockspin(self):
-        # self.read()
-        # return
-        while self.is_open:
-            msg = self.queue.get()
-            print("Have message: ", msg)
+    def __init__(self):
+        super(ControllerManager, self).__init__()
+
+    def send(self, status, error):
+        ''' 
+        Send a response through to the controller. 
+
+        :param status:
+        '''
+        pass
 
 
 def main():
     conn = SerialConnection(SERIAL_PORT)
     conn.open()
     conn.write("txpower")
-    conn.blockspin()
-
-    # first = True
-
-    # while True:
-    #     beb = conn._serial.in_waiting
-
-    #     while beb > 0:
-    #         print("Waiting with bytes: " + str(beb))
-    #         x = conn.read()
-    #         x = x.decode()
-    #         print(x)
-
-    #     if first:
-    #         print("First....")
-    #         conn.write("txpower\r")
-    #         first = False
+    conn.spinwait()
 
 
 if __name__ == '__main__':
     main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

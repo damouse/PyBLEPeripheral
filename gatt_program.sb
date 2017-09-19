@@ -1065,7 +1065,7 @@ function OnUartCmd(stData$, datalen) as integer
   dim rsp
   rsp=0  //Assume OK response
 
-  // DbgMsgVal("Length of input: ", datalen)
+  DbgMsgVal("Length of input: ", datalen)
 
   if datalen >= 4 then
 
@@ -1075,9 +1075,9 @@ function OnUartCmd(stData$, datalen) as integer
 
     stRS$ = strsplitleft$(stData$, 3)
 
-    // DbgMsg(stData$)
-    // DbgMsg(strdehexize$(stData$))
-    // DbgMsg(stRS$)
+    DbgMsg(stData$)
+    DbgMsg(strdehexize$(stData$))
+    DbgMsg(stRS$)
 
     if strcmp(stRS$, "hr ")==0 then   //Heart rate in beats per minute
       hrtRate = strvaldec(stData$)
