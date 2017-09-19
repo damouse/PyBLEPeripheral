@@ -900,7 +900,6 @@ function SendData(byref msg$ as string) as integer
 
   // rc= StrFill(hrs$, 0, encsz)
   // AssertRC(rc, 902)
-
   // msg$ = strdehexize$(msg$)
 
   rc = BleCharValueNotify(chHrsMeas, msg$)
@@ -1093,7 +1092,8 @@ function OnUartCmd(stData$, datalen) as integer
 
     elseif strcmp(stRS$, "se ") == 0 then
       DbgMsg("Sending to Peer")
-      SendData(readBuffer$)
+      rc = SendData(readBuffer$)
+      AssertRC(rc, 1096)
       DbgInfo(strvaldec(readBuffer$))
 
     elseif strcmp(stRS$, "qq ") == 0 then
