@@ -72,6 +72,8 @@ class SerialConnection(object):
         return self._serial.in_waiting
 
     def blockspin(self):
+        self.read()
+        return
         while self.is_open:
             msg = self.queue.get()
             print("Have message: ", msg)
