@@ -1299,7 +1299,7 @@ FUNCTION HndlrChar(BYVAL chrHndl, BYVAL offset, BYVAL len)
         DbgMsg("Done")
         // SendHrData()
     ENDIF
-ENDFUNC 0
+ENDFUNC 1
 
 
 //******************************************************************************
