@@ -898,8 +898,8 @@ endfunc rc
 function SendData(byref msg$ as string) as integer
   dim rc
 
-  rc= StrFill(hrs$, 0, encsz)
-  AssertRC(rc, 902)
+  // rc= StrFill(hrs$, 0, encsz)
+  // AssertRC(rc, 902)
 
   // msg$ = strdehexize$(msg$)
 
