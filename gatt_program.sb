@@ -957,7 +957,7 @@ function AddCharHrsMeas() as integer
 
   //Create the Characteristic object
   chProp = BLE_CHAR_PROPERTIES_READ | BLE_CHAR_PROPERTIES_WRITE
-  rc = BleCharNew(chProp, BleHandleUuid16(0x2A37), mdAttr, mdCccd, mdSccd)
+  rc = BleCharNew(chProp, BleHandleUuid16(0x2A38), mdAttr, mdCccd, mdSccd)
   AssertRC(rc,  931)
 
   //Commit the characteristic
