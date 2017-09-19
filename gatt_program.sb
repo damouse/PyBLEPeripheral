@@ -964,7 +964,7 @@ function AddCharHrsMeas() as integer
 
   //Create the Characteristic object
   chProp = BLE_CHAR_PROPERTIES_READ | BLE_CHAR_PROPERTIES_WRITE
-  rc = BleCharNew(chProp, BleHandleUuid16(0x2A37), mdAttr, 0, 0)
+  rc = BleCharNew(chProp, BleHandleUuid16(0x2A37), mdAttr, mdCcd, 0)
   AssertRC(rc,  931)
 
   //Commit the characteristic
@@ -1010,8 +1010,8 @@ function RegHrsService() as integer
   AssertRC(rc,  994)
 
   //Create the READ characteristic
-  rc = AddCharHrsSensLoc()
-  AssertRC(rc,  998)
+  // rc = AddCharHrsSensLoc()
+  // AssertRC(rc,  998)
   
   //Commit Heart Rate service to GATT table
   rc=BleServiceCommit(shHrs)
