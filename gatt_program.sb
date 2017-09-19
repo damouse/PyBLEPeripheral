@@ -1451,11 +1451,12 @@ endfunc 1
 // New char value handler
 //==============================================================================  
 FUNCTION HndlrChar(BYVAL chrHndl, BYVAL offset, BYVAL len)  
-    dim s$
+    dim s$, rc
     IF chrHndl == chHrsMeas THEN
         PRINT "\n";len;" byte(s) have been written to char value attribute from offset ";offset
         
         rc=BleCharValueRead(chHrsMeas,s$)
+        AssertRC(rc, 1459)
         PRINT "\nNew Char Value: ";s$
     ENDIF
 ENDFUNC 0
