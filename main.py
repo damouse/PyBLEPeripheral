@@ -58,7 +58,7 @@ def main():
     first = True
 
     while True:
-        while conn.waiting:
+        while conn._serial.in_waiting:
             print("Waiting...")
             x = conn.read()
             x = x.decode()
