@@ -39,7 +39,7 @@ FUNCTION OnStartup()
     // Advertisements
     //
 
-    rc=BleAdvRptInit(adRpt$,0x02,0,20)
+    rc=BleAdvRptInit(adRpt$, 0x02, 1, 20)
     AssertRc(rc, 55) 
 
     rc=BleScanRptInit(scRpt$) 
