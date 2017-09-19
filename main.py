@@ -44,6 +44,8 @@ class SerialConnection(object):
 
     def write(self, msg):
         ''' Write a message to the serial connection '''
+        with self._lock:
+            self._serial.write(msg + "\r")
 
     def waiting(self):
         return self._serial.in_waiting
