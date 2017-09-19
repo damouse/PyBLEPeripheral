@@ -1077,8 +1077,8 @@ function OnUartCmd(stData$, datalen) as integer
 
     stRS$ = strsplitleft$(stData$, 3)
 
-    // DbgMsg(stData$)
-    // DbgMsg(stRS$)
+    DbgMsg(stData$)
+    DbgMsg(stRS$)
 
     if strcmp(stRS$, "hr ")==0 then   //Heart rate in beats per minute
       hrtRate = strvaldec(stData$)
@@ -1092,9 +1092,9 @@ function OnUartCmd(stData$, datalen) as integer
 
     elseif strcmp(stRS$, "se ") == 0 then
       DbgMsg("Sending to Peer")
-      rc = SendData(readBuffer$)
+      rc = SendData(stData$)
       AssertRC(rc, 1096)
-      DbgInfo(strvaldec(readBuffer$))
+      DbgInfo(strvaldec(stData$))
 
     elseif strcmp(stRS$, "qq ") == 0 then
       DbgMsg(readBuffer$)
