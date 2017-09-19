@@ -964,14 +964,13 @@ function AddCharHrsMeas() as integer
 
   //Create the Characteristic object
   chProp = BLE_CHAR_PROPERTIES_READ | BLE_CHAR_PROPERTIES_WRITE
-  rc = BleCharNew(chProp, BleHandleUuid16(0x2A37), mdAttr, mdCcd, 0)
+  rc = BleCharNew(chProp, BleHandleUuid16(0x2A37), mdAttr, mdCccd, 0)
   AssertRC(rc,  931)
 
   //Commit the characteristic
   HrsEncode()
   rc = BleCharCommit(shHrs, hrs$, chHrsMeas)
   AssertRC(rc,  938)
-
 endfunc rc
 
 
