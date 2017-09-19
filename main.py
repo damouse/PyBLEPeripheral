@@ -59,9 +59,9 @@ class SerialConnection(object):
 
         while True:
             while self._serial.in_waiting:
-                print(x)
                 x = self._serial.readline()
                 x = x.decode()
+                print(x)
                 self.queue.put(x)
 
     def write(self, msg):
