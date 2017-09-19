@@ -885,12 +885,27 @@ endsub
 //==============================================================================
 function SendHrData() as integer
   dim rc
-  HrsEncode()
+  //HrsEncode()
   // print "\nhrs_attr=";strhexize$(hrs$);"\n"
   rc = BleCharValueNotify(chHrsMeas, hrs$)
   AssertRC(rc,  1041)
 endfunc rc
 
+//==============================================================================
+// Encode the given string as bytes, directly, and send to the remote peer
+// if the connection is open 
+//==============================================================================
+function SendData(byref msg$ as string) as integer
+  dim rc
+
+  rc= StrFill(hrs$, 0, encsz)
+  AssertRC(rc, 902)
+
+  // msg$ = strdehexize$(msg$)
+
+  rc = BleCharValueNotify(chHrsMeas, msg$)
+  AssertRC(rc,  906)
+endfunc rc
 
 //==============================================================================
 //==============================================================================
@@ -1075,6 +1090,11 @@ function OnUartCmd(stData$, datalen) as integer
       if rc != 0 then
         rsp = 1
       endif
+
+    elseif strcmp(stRS$, "se ") == 0 then
+      DbgMsg("Sending to Peer")
+      SendData(readBuffer$)
+      DbgInfo(strvaldec(readBuffer$))
 
     elseif strcmp(stRS$, "qq ") == 0 then
       DbgMsg(readBuffer$)
