@@ -991,9 +991,7 @@ function RegHrsService() as integer
   dim rc
 
   //Create a Heart Rate PRIMARY service attribure which has a uuid of 0x180D
-  // rc = BleServiceNew(BLE_SERVICE_PRIMARY,  UUID_SERVICE,  shHrs)
   rc = BleServiceNew(BLE_SERVICE_PRIMARY, BleHandleUuid16(UUID_HEART_RATE_SERVICE), shHrs)
-
   AssertRC(rc,  990)
 
   //Create the Heart Rate Measurement Characteristic which has a UUID of 0x2A37
@@ -1181,7 +1179,6 @@ sub ShowConnParms(nCtx as integer)
   endif
 endsub
 
-
 //==============================================================================
 //==============================================================================
 sub SetDeviceName(st$ as string, wr as integer)
@@ -1229,6 +1226,9 @@ function OnUartCmd(stData$, datalen) as integer
 
 #cmpif 0x04 :     elseif strcmp(stRS$, "bl ")==0 then
 #cmpif 0x04 :       rc =SetBattLevel(strvaldec(stData$))
+
+    elseif strcmp(stRS$, "dp ")==0 then
+      DbgInfo(strvaldec(hrs$))
 
     elseif strcmp(stRS$, "db ")==0 then
       DbgInfo(strvaldec(stData$))
@@ -1367,8 +1367,8 @@ function HandlerBleMsg(BYVAL nMsgId AS INTEGER,  BYVAL nCtx AS INTEGER) as integ
   case BLE_EVBLEMSGID_DISCONNECT
     DbgMsgVal(" --- Disconnect : ", nCtx)
 
-  //case BLE_EVBLEMSGID_HRS_NOTIFICATION_STATE
-  //  DbgMsgVal(" --- Hrs Notification : ", nCtx)
+  case BLE_EVBLEMSGID_HRS_NOTIFICATION_STATE
+    DbgMsgVal(" --- Hrs Notification : ", nCtx)
 
   case BLE_EVBLEMSGID_DEVICENAME_WRITE
     DbgMsg(" --- DevName Write : ")

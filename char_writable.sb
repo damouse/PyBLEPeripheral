@@ -4,7 +4,7 @@ DIM hMyChar,rc, conHndl
 dim UUID_CHAR
 dim UUID_SERVICE
 
-UUID_SERVICE = 0x180E
+UUID_SERVICE = 0x180B
 UUID_CHAR = 0x2A37
 
 sub AssertRC(byval rc as integer, byval tag as integer)
