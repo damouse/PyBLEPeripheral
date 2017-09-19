@@ -943,11 +943,10 @@ function AddCharHrsMeas() as integer
   dim chProp
   //dim attr$
 
-  //++++
   //Create the metadata for the value attribute in the characteristic
   //Heart Rate attribute has variable length
-  //++++
-  mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_NONE, BLE_ATTR_ACCESS_NONE, MAX_HRM_LEN, 1, rc)
+  // mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_NONE, BLE_ATTR_ACCESS_NONE, MAX_HRM_LEN, 1, rc)
+  mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN, BLE_ATTR_ACCESS_NONE, 1, 0, rc)
   AssertRC(rc,  921)
 
   //There is a CCCD in this characteristic
@@ -957,16 +956,12 @@ function AddCharHrsMeas() as integer
   //There is no SCCD in this characteristic
   mdSccd = BLE_CHAR_METADATA_ATTR_NOT_PRESENT
 
-  //AssertRC(rc,  927)
   //Create the Characteristic object
-  // chProp = BLE_CHAR_PROPERTIES_NOTIFY | BLE_CHAR_PROPERTIES_WRITE
-  chProp = BLE_CHAR_PROPERTIES_NOTIFY + BLE_CHAR_PROPERTIES_WRITE
+  chProp =  BLE_CHAR_PROPERTIES_WRITE
   rc = BleCharNew(chProp, BleHandleUuid16(0x2A37), mdAttr, mdCccd, mdSccd)
   AssertRC(rc,  931)
 
-  //++++
   //Commit the characteristic
-  //++++
   HrsEncode()
   rc = BleCharCommit(shHrs, hrs$, chHrsMeas)
   AssertRC(rc,  938)
