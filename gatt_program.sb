@@ -348,6 +348,7 @@ maxint  = MAX_CONN_INTERVAL
 sprtout = CONN_SUP_TIMEOUT
 slatncy = SLAVE_LATENCY
 
+
 hrtRate         = 0
 sensLoc         = BLE_HRS_BODY_SENSOR_LOCATION_CHEST
 sensCntct       = 1
@@ -746,31 +747,30 @@ sub HrsEncode()
   //Create the attribute buffer space
   rc= StrFill(hrs$, 0, encsz)
 
-  rc = BleEncode8(hrs$, 0x00, 0)
-  AssertRC(rc, 750)
-
-  rc = BleEncode8(hrs$, 0xEE, 1)
-  AssertRC(rc, 753)
+  // rc = BleEncode8(hrs$, 0x00, 0)
+  // AssertRC(rc, 750)
+  // rc = BleEncode8(hrs$, 0xEE, 1)
+  // AssertRC(rc, 753)
 
   //Save the flags field
-  // rc = BleEncode8(hrs$, flgs, 0)
+  rc = BleEncode8(hrs$, flgs, 0)
 
   //Save the heart rate info
-  // if hrtRate < 256 then
-    // rc = BleEncode8(hrs$, hrtRate, 1)
-    // ndx = 2
-  // else
-    // rc = BleEncode16(hrs$, hrtRate, 1)
-    // ndx = 3
-  // endif
+  if hrtRate < 256 then
+    rc = BleEncode8(hrs$, hrtRate, 1)
+    ndx = 2
+  else
+    rc = BleEncode16(hrs$, hrtRate, 1)
+    ndx = 3
+  endif
 
   //Save the rrInfo if there is any
-  // while (itms)
-  //   rc = CircBufRead(hRing, rr)
-  //   rc = BleEncode16(hrs$, rr, ndx)
-  //   ndx = ndx + 2
-  //   itms = itms - 1
-  // endwhile
+  while (itms)
+    rc = CircBufRead(hRing, rr)
+    rc = BleEncode16(hrs$, rr, ndx)
+    ndx = ndx + 2
+    itms = itms - 1
+  endwhile
 endsub
 
 //==============================================================================
@@ -1053,7 +1053,7 @@ function OnUartCmd(stData$, datalen) as integer
   dim rsp
   rsp=0  //Assume OK response
 
-  DbgMsgVal("Length of input: ", datalen)
+  // DbgMsgVal("Length of input: ", datalen)
 
   if datalen >= 4 then
 
@@ -1063,8 +1063,8 @@ function OnUartCmd(stData$, datalen) as integer
 
     stRS$ = strsplitleft$(stData$, 3)
 
-    DbgMsg(stData$)
-    DbgMsg(stRS$)
+    // DbgMsg(stData$)
+    // DbgMsg(stRS$)
 
     if strcmp(stRS$, "hr ")==0 then   //Heart rate in beats per minute
       hrtRate = strvaldec(stData$)
