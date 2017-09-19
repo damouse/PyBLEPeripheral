@@ -1025,13 +1025,13 @@ function RegHrsService() as integer
 
   //Create a Heart Rate PRIMARY service attribure which has a uuid of 0x180D
   // rc = BleServiceNew(BLE_SERVICE_PRIMARY,  UUID_SERVICE,  shHrs)
-  rc = BleServiceNew(BLE_SERVICE_PRIMARY, BleHandleUuid16(0x180D), shHrs)
+  rc = BleServiceNew(BLE_SERVICE_PRIMARY, BleHandleUuid16(UUID_HEART_RATE_SERVICE), shHrs)
 
   AssertRC(rc,  990)
 
   //Create the Heart Rate Measurement Characteristic which has a UUID of 0x2A37
-  // rc = AddCharHrsMeas()
-  // AssertRC(rc,  994)
+  rc = AddCharHrsMeas()
+  AssertRC(rc,  994)
 
   //Create the READ characteristic
   // rc = AddCharHrsSensLoc()
