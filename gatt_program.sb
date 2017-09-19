@@ -89,6 +89,7 @@ uuidService$ = "d4d9365fcd084024b670b0ec0d6632bd"
 uuidService$ = StrDehexize$(uuidService$)
 UUID_SERVICE = BleHandleUuid128(uuidService$)
 
+dim readBuffer$
 
 #set $cmpif,  0x0 //Disable battery service
 //#set $cmpif,  0x4 //Enable battery service
@@ -961,7 +962,9 @@ function AddCharHrsMeas() as integer
 
   //Commit the characteristic
   HrsEncode()
-  rc = BleCharCommit(shHrs, hrs$, chHrsMeas)
+
+  readBuffer$ = "Hi"
+  rc = BleCharCommit(shHrs, readBuffer$, chHrsMeas)
   AssertRC(rc,  938)
 endfunc rc
 
@@ -1228,7 +1231,7 @@ function OnUartCmd(stData$, datalen) as integer
 #cmpif 0x04 :       rc =SetBattLevel(strvaldec(stData$))
 
     elseif strcmp(stRS$, "dp ")==0 then
-      DbgInfo(strvaldec(hrs$))
+      DbgMsg(readBuffer$)
 
     elseif strcmp(stRS$, "db ")==0 then
       DbgInfo(strvaldec(stData$))
