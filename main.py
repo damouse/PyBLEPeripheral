@@ -18,7 +18,7 @@ Then again, because the serial connection blocks, maybe the threading implementa
 
 import serial
 from threading import Thread
-from Queue import Queue
+from queue import Queue
 
 # Constants
 SERIAL_PORT = '/dev/ttyAMA0'
@@ -38,10 +38,11 @@ class SerialConnection(object):
 
         self.queue = Queue()
         self.thread = None
-        # self.is_open = False
+        self.is_open = False
 
     def open(self):
         ''' This doesen't open the serial connection, it starts the thread that listens to it '''
+        self.is_open = True
         self.thread = Thread(target=self.read)
         self.thread.start()
 
@@ -71,7 +72,7 @@ class SerialConnection(object):
         return self._serial.in_waiting
 
     def blockspin(self):
-        while self.running:
+        while self.is_open:
             msg = self.queue.get()
             print("Have message: ", msg)
 
