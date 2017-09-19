@@ -747,7 +747,10 @@ sub HrsEncode()
   rc= StrFill(hrs$, 0, encsz)
 
   rc = BleEncode8(hrs$, 0x00, 0)
-  rc = BleEncode8(hrs$, 0x11, 1)
+  AssertRC(rc, 750)
+
+  rc = BleEncode8(hrs$, 0xEE, 1)
+  AssertRC(rc, 753)
 
   //Save the flags field
   // rc = BleEncode8(hrs$, flgs, 0)
