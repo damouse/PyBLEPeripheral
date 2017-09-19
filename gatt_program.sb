@@ -980,7 +980,7 @@ function AddCharHrsSensLoc() as integer
    DIM mdSccd : mdSccd = BleAttrMetadata(1,1,2,0,rc)
 
    //initialise char, read enabled, accept signed writes, broadcast capable
-   rc=BleCharNew(0x03,BleHandleUuid16(2A38), charMet, 0, mdSccd)
+   rc=BleCharNew(0x03, BleHandleUuid16(0x2A38), charMet, 0, mdSccd)
 
    //commit char initialised above, with initial value "hi" to service 'hMyChar'
    rc=BleCharCommit(shHrs, attr$, hMyChar)
