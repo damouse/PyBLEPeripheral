@@ -39,7 +39,7 @@ FUNCTION OnStartup()
     // Advertisements
     //
 
-    sub InitAdvReports(advFlags as integer)
+    // sub InitAdvReports(advFlags as integer)
 
     //Create a minimal advertise report
     // rc = BleAdvRptInit(adRpt$, advFlags, ADV_APPEARANCE, MAX_DEVNAME_CHRS)
