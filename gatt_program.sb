@@ -130,7 +130,7 @@ dim readBuffer$
 #define MAX_CONN_PARAMS_UPDATE_DELAY      15000
 
 #define RR_RING_BUFFER_SIZE                9
-#define MAX_HRM_LEN                        40
+#define MAX_HRM_LEN                        20
 
 
 #define BLE_CONN_HANDLE_INVALID                           0xFFFF
