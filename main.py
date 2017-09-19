@@ -13,7 +13,8 @@ connection with the host. This program may have a few more.
 import serial
 import threading
 
-# Constants
+# Constant
+s
 SERIAL_PORT = '/dev/ttyAMA0'
 SERIAL_BAUDRATE = 115200
 SERIAL_TIMEOUT = 0.1
@@ -27,7 +28,11 @@ class SerialConnection(object):
 
     def __init__(self, port):
         super(SerialConneciton, self).__init__()
-        self._serial = serial.Serial(port, SERIAL_BAUDRATE, SERIAL_TIMEOUT, SERIAL_RTSCTS)
+        self._serial = serial.Serial(port=port,
+                                     baudrate=SERIAL_BAUDRATE,
+                                     timeout=SERIAL_TIMEOUT,
+                                     rtscts=SERIAL_RTSCTS)
+
         self._lock = threading.Lock()
 
     def read(self):
