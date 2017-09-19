@@ -1052,14 +1052,18 @@ function OnUartCmd(stData$, datalen) as integer
   dim vl
   dim rsp
   rsp=0  //Assume OK response
+
+  DbgMsgVal("Length of input: ", datalen)
+
   if datalen >= 4 then
 
     //Drop the terminating CR
     datalen = datalen - 1
     stData$ = left$(stData$, datalen)
+    DbgMsg(stData$)
 
     stRS$ = strsplitleft$(stData$, 3)
-    if     strcmp(stRS$, "hr ")==0 then   //Heart rate in beats per minute
+    if strcmp(stRS$, "hr ")==0 then   //Heart rate in beats per minute
       hrtRate = strvaldec(stData$)
 
     elseif  strcmp(stRS$, "rr ")==0 then  //rr interval add
