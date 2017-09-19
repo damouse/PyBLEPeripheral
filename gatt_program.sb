@@ -107,8 +107,8 @@ dim readBuffer$
         //Set Appearance advertise 0 to suppress
 #define ADV_APPEARANCE                    1
 
-#define ADV_INTERVAL_MS                   100    //Advertise interval
-#define ADV_TIMEOUT_MS                    60000  //Advertise timeout
+#define ADV_INTERVAL_MS                   100     //Advertise interval
+#define ADV_TIMEOUT_MS                    600000  //Advertise timeout
 
         //Whitelist Policy in Adverts
 #define ADV_WHITELIST_FILTER_POLICY       ADV_FILTERPOLICY_ANY
