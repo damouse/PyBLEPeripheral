@@ -1295,6 +1295,9 @@ FUNCTION HndlrChar(BYVAL chrHndl, BYVAL offset, BYVAL len)
         rc=BleCharValueRead(chInbound,s$)
         AssertRC(rc, 1459)
         PRINT "\nNew Char Value: ";s$
+
+        DbgMsg("Done")
+        // SendHrData()
     ENDIF
 ENDFUNC 0
 
@@ -1310,7 +1313,8 @@ OnEvent  EVUARTRX           call HandlerUartRx
 OnEvent  EVBLEMSG           call HandlerBleMsg
 OnEvent  EVBLE_ADV_TIMEOUT  call HandlerBlrAdvTimOut
 OnEvent  EVCHARCCCD         call HandlerCharCccd
-ONEVENT  EVCHARVAL           CALL HndlrChar
+ONEVENT  EVCHARVAL          CALL HndlrChar
+
 //------------------------------------------------------------------------------
 // Initialise and then wait for events
 //------------------------------------------------------------------------------
