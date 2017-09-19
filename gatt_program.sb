@@ -944,9 +944,15 @@ function AddCharHrsMeas() as integer
   dim chProp
   //dim attr$
 
+  // CCCD: Client Characteristic Configuration Descriptor. Must be supplied if client is 
+  // capable of notificaiton or indication
+
+  // SCCD: Server Charecteristic Configuration Descriptor. Must be suplied if the char
+  // can broadcast its value in advertisements
+
   //Create the metadata for the value attribute in the characteristic
   //Heart Rate attribute has variable length
-  mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_NONE, BLE_ATTR_ACCESS_NONE, MAX_HRM_LEN, 1, rc)
+  mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN, BLE_ATTR_ACCESS_OPEN, MAX_HRM_LEN, 1, rc)
   AssertRC(rc,  921)
 
   //There is a CCCD in this characteristic
@@ -956,12 +962,9 @@ function AddCharHrsMeas() as integer
   //There is no SCCD in this characteristic
   mdSccd = BLE_CHAR_METADATA_ATTR_NOT_PRESENT
 
-  mdAttr = BleAttrMetaData(1,0,20,0,rc)
-  mdSccd = BleAttrMetadata(1,1,2,0,rc)
-
   //Create the Characteristic object
-  chProp = BLE_CHAR_PROPERTIES_NOTIFY
-  rc = BleCharNew(chProp, BleHandleUuid16(0x2A37), mdAttr, mdCccd, mdSccd)
+  chProp = BLE_CHAR_PROPERTIES_READ | BLE_CHAR_PROPERTIES_WRITE
+  rc = BleCharNew(chProp, BleHandleUuid16(0x2A37), mdAttr, 0, 0)
   AssertRC(rc,  931)
 
   //Commit the characteristic
@@ -981,14 +984,9 @@ function AddCharHrsSensLoc() as integer
 
    DIM charMet : charMet = BleAttrMetaData(1,0,20,0,rc)
    DIM mdSccd : mdSccd = BleAttrMetadata(1,1,2,0,rc)
-   dim mdCccd
-
-     //There is a CCCD in this characteristic
-  mdCccd=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN, BLE_ATTR_ACCESS_OPEN, 2, 0, rc)
-  AssertRC(rc,  924)
 
    //initialise char, read enabled, accept signed writes, broadcast capable
-   rc=BleCharNew(0x03, BleHandleUuid16(0x2A38), charMet, mdCccd, mdSccd)
+   rc=BleCharNew(0x03,BleHandleUuid16(0x2A38), charMet, 0, mdSccd)
 
    //commit char initialised above, with initial value "hi" to service 'hMyChar'
    rc=BleCharCommit(shHrs, attr$, hMyChar)
@@ -1002,7 +1000,9 @@ function RegHrsService() as integer
   dim rc
 
   //Create a Heart Rate PRIMARY service attribure which has a uuid of 0x180D
+  // rc = BleServiceNew(BLE_SERVICE_PRIMARY,  UUID_SERVICE,  shHrs)
   rc = BleServiceNew(BLE_SERVICE_PRIMARY, BleHandleUuid16(UUID_HEART_RATE_SERVICE), shHrs)
+
   AssertRC(rc,  990)
 
   //Create the Heart Rate Measurement Characteristic which has a UUID of 0x2A37
