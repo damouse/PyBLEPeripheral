@@ -886,7 +886,7 @@ endsub
 function SendHrData() as integer
   dim rc
   HrsEncode()
-  print "\nhrs_attr=";strhexize$(hrs$);"\n"
+  // print "\nhrs_attr=";strhexize$(hrs$);"\n"
   rc = BleCharValueNotify(chHrsMeas, hrs$)
   AssertRC(rc,  1041)
 endfunc rc
@@ -1060,9 +1060,12 @@ function OnUartCmd(stData$, datalen) as integer
     //Drop the terminating CR
     datalen = datalen - 1
     stData$ = left$(stData$, datalen)
-    DbgMsg(stData$)
 
     stRS$ = strsplitleft$(stData$, 3)
+
+    DbgMsg(stData$)
+    DbgMsg(stRS$)
+
     if strcmp(stRS$, "hr ")==0 then   //Heart rate in beats per minute
       hrtRate = strvaldec(stData$)
 
