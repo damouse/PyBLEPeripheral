@@ -183,7 +183,7 @@ UUID_SERVICE = BleHandleUuid128(uuidService$)
 #define BLE_APPEARANCE_GENERIC_HEART_RATE_SENSOR          832
 #define BLE_APPEARANCE_HEART_RATE_SENSOR_HEART_RATE_BELT  833
 
-// #define UUID_BATTERY_SERVICE                              0x180F
+// #define UUID_BATTERY_SERVICE                           0x180F
 #define UUID_DEVICE_INFORMATION_SERVICE                   0x180A
 #define UUID_HEART_RATE_SERVICE                           0x180E
 
@@ -909,8 +909,10 @@ sub HrsEncode()
 
   //Create the attribute buffer space
   rc= StrFill(hrs$, 0, encsz)
+
   //Save the flags field
   rc = BleEncode8(hrs$, flgs, 0)
+
   //Save the heart rate info
   if hrtRate < 256 then
     rc = BleEncode8(hrs$, hrtRate, 1)
@@ -919,6 +921,7 @@ sub HrsEncode()
     rc = BleEncode16(hrs$, hrtRate, 1)
     ndx = 3
   endif
+
   //Save the rrInfo if there is any
   while (itms)
     rc = CircBufRead(hRing, rr)
@@ -926,8 +929,6 @@ sub HrsEncode()
     ndx = ndx + 2
     itms = itms - 1
   endwhile
-
-
 endsub
 
 //==============================================================================
