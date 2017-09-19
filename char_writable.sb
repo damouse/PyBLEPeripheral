@@ -1,0 +1,120 @@
+//Example :: BleCharValueRead.sb
+DIM hMyChar,rc, conHndl
+
+dim UUID_CHAR
+dim UUID_SERVICE
+
+UUID_SERVICE = 0x180E
+UUID_CHAR = 0x2A37
+
+sub AssertRC(byval rc as integer, byval tag as integer)
+  if (rc!=0) then
+    print "Failed with ";integer.h' rc;" at tag ";tag;"\n"
+  endif
+endsub
+
+//==============================================================================
+// Initialise and instantiate service, characteristic, 
+//==============================================================================
+FUNCTION OnStartup()
+    DIM rc, hSvc, scRpt$, adRpt$, addr$, attr$ : attr$="Hi"
+
+    //commit service
+    rc=BleServiceNew(1, UUID_SERVICE, hSvc)
+    AssertRC(rc, 35)
+
+    //initialise char, write/read enabled, accept signed writes
+    rc=BleCharNew(0x0A, UUID_CHAR, BleAttrMetaData(1,1,20,0,rc),0,0)     
+    AssertRC(rc, 40)
+
+    //commit char initialised above, with initial value "hi" to service 'hSvc'
+    rc=BleCharCommit(hSvc,attr$,hMyChar)
+    AssertRC(rc, 44)
+
+    //commit changes to service
+    rc=BleServiceCommit(hSvc)
+    AssertRC(rc, 48)
+
+    //
+    // Advertisements
+    //
+
+    sub InitAdvReports(advFlags as integer)
+
+    //Create a minimal advertise report
+    // rc = BleAdvRptInit(adRpt$, advFlags, ADV_APPEARANCE, MAX_DEVNAME_CHRS)
+    // AssertRC(rc,  555)
+
+    //Append the uuid list to the advert report
+    // DbgMsgVal("Creating the advertisement report", advUuid[0])
+    // rc = BleAdvRptAddUuid16(adRpt$,advUuid[0],advUuid[1],advUuid[2],advUuid[3],advUuid[4],advUuid[5])
+    // AssertRC(rc, 559)
+
+    //Initialise an empty scan report
+    // rc = BleScanRptInit(scRpt$)
+    // AssertRC(rc,  563)
+
+    // rc = BleAdvRptAddUuid128(scRpt$, UUID_SERVICE)
+    // AssertRC(rc,  559)
+
+    //Commit the advert and scan report to the scan
+    // rc = BleAdvRptsCommit(adRpt$, scRpt$)
+    // AssertRC(rc,  567)
+    // End Other Adbs
+
+    rc=BleAdvRptInit(adRpt$,0x02,0,20)
+    AssertRc(rc, 55) 
+
+    rc=BleScanRptInit(scRpt$) 
+    AssertRC(rc, 52)
+
+    rc=BleAdvRptAddUuid16(adRpt$, UUID_SERVICE,-1,-1,-1,-1,-1)
+    AssertRC(rc, 57)
+
+    rc=BleAdvRptsCommit(adRpt$,scRpt$)
+    AssertRC(rc, 61)
+
+    rc=BleAdvertStart(0, addr$, 150, 0, 0)
+    AssertRC(rc, 64)
+
+ENDFUNC rc
+
+//==============================================================================
+// New char value handler
+//==============================================================================  
+FUNCTION HndlrChar(BYVAL chrHndl, BYVAL offset, BYVAL len)  
+    dim s$
+    IF chrHndl == hMyChar THEN
+        PRINT "\n";len;" byte(s) have been written to char value attribute from offset ";offset
+        
+        rc=BleCharValueRead(hMyChar,s$)
+        PRINT "\nNew Char Value: ";s$
+    ENDIF
+    rc=BleAdvertStop()
+    AssertRC(rc, 80)
+
+    rc=BleDisconnect(conHndl)
+    AssertRC(rc, 83)
+
+ENDFUNC 0
+
+//==============================================================================
+// Get the connnection handle 
+//==============================================================================
+FUNCTION HndlrBleMsg(BYVAL nMsgId, BYVAL nCtn)
+    conHndl=nCtn
+ENDFUNC 1
+
+IF OnStartup()==0 THEN
+    DIM at$ : rc = BleCharValueRead(hMyChar,at$)
+    PRINT "\nCharacteristic value attribute: ";at$;"\nConnect to BL652 and send a new value\n"
+ELSE
+    PRINT "\nFailure OnStartup"
+ENDIF
+
+ONEVENT EVCHARVAL  CALL HndlrChar
+ONEVENT EVBLEMSG  CALL HndlrBleMsg
+
+WAITEVENT
+
+PRINT "\nExiting..."
