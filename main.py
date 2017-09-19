@@ -55,11 +55,13 @@ class SerialConnection(object):
         # with self._lock:
         #     return self._serial.readline()
 
+        print("Starting Read")
+
         while self._serial.in_waiting:
+            print(x)
             x = self._serial.readline()
             x = x.decode()
             self.queue.put(x)
-            print(x)
 
     def write(self, msg):
         ''' Write a message to the serial connection. Blocks on concurrent reads or writes'''
