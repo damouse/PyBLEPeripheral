@@ -900,7 +900,7 @@ function SendData(byref msg$ as string) as integer
 
   // rc= StrFill(hrs$, 0, encsz)
   // AssertRC(rc, 902)
-  // msg$ = strdehexize$(msg$)
+  msg$ = strdehexize$(msg$)
 
   rc = BleCharValueNotify(chHrsMeas, msg$)
   AssertRC(rc,  906)
@@ -1078,6 +1078,7 @@ function OnUartCmd(stData$, datalen) as integer
     stRS$ = strsplitleft$(stData$, 3)
 
     DbgMsg(stData$)
+    DbgMsg(strdehexize$(stData$))
     DbgMsg(stRS$)
 
     if strcmp(stRS$, "hr ")==0 then   //Heart rate in beats per minute
@@ -1094,7 +1095,7 @@ function OnUartCmd(stData$, datalen) as integer
       DbgMsg("Sending to Peer")
       rc = SendData(stData$)
       AssertRC(rc, 1096)
-      DbgInfo(strvaldec(stData$))
+      DbgMsg(strvaldec(stData$))
 
     elseif strcmp(stRS$, "qq ") == 0 then
       DbgMsg(readBuffer$)
