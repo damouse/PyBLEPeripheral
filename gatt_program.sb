@@ -566,8 +566,8 @@ sub InitAdvReports(advFlags as integer)
   rc = BleScanRptInit(scRpt$)
   AssertRC(rc,  563)
 
-  rc = BleAdvRptAddUuid128(scRpt$, UUID_SERVICE)
-  AssertRC(rc,  559)
+  // rc = BleAdvRptAddUuid128(scRpt$, UUID_SERVICE)
+  // AssertRC(rc,  559)
 
   //Commit the advert and scan report to the scan
   rc = BleAdvRptsCommit(adRpt$, scRpt$)
