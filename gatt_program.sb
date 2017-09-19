@@ -1227,11 +1227,9 @@ function OnUartCmd(stData$, datalen) as integer
         rsp = 1
       endif
 
-#cmpif 0x04 :     elseif strcmp(stRS$, "bl ")==0 then
-#cmpif 0x04 :       rc =SetBattLevel(strvaldec(stData$))
-
-    elseif strcmp(stRS$, "dp ")==0 then
+    elseif strcmp(stRS$, "qq ") == 0 then
       DbgMsg(readBuffer$)
+      DbgMsg(strvaldec(readBuffer$))
 
     elseif strcmp(stRS$, "db ")==0 then
       DbgInfo(strvaldec(stData$))
