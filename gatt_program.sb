@@ -1447,6 +1447,20 @@ function HandlerBlrAdvTimOut() as integer
 
 endfunc 1
 
+//==============================================================================
+// New char value handler
+//==============================================================================  
+FUNCTION HndlrChar(BYVAL chrHndl, BYVAL offset, BYVAL len)  
+    dim s$
+    IF chrHndl == chHrsMeas THEN
+        PRINT "\n";len;" byte(s) have been written to char value attribute from offset ";offset
+        
+        rc=BleCharValueRead(chHrsMeas,s$)
+        PRINT "\nNew Char Value: ";s$
+    ENDIF
+ENDFUNC 0
+
+
 //******************************************************************************
 // Equivalent to main() in C
 //******************************************************************************
@@ -1458,7 +1472,7 @@ OnEvent  EVUARTRX           call HandlerUartRx
 OnEvent  EVBLEMSG           call HandlerBleMsg
 OnEvent  EVBLE_ADV_TIMEOUT  call HandlerBlrAdvTimOut
 OnEvent  EVCHARCCCD         call HandlerCharCccd
-
+ONEVENT  EVCHARVAL           CALL HndlrChar
 //------------------------------------------------------------------------------
 // Initialise and then wait for events
 //------------------------------------------------------------------------------
