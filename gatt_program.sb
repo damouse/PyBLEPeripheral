@@ -546,8 +546,8 @@ sub AddUuid(nUuid as integer)
   if advUuidCnt < 5 then
     advUuid[advUuidCnt]=nUuid
     
-    DbgMsgVal("Added service uuid at position", advUuidCnt)
-    DbgMsgVal("Uuid: ", nUuid)
+    // DbgMsgVal("Added service uuid at position", advUuidCnt)
+    // DbgMsgVal("Uuid: ", nUuid)
 
     advUuidCnt = advUuidCnt + 1
   else 
@@ -580,7 +580,7 @@ sub InitAdvReports(advFlags as integer)
   AssertRC(rc,  555)
 
   //Append the uuid list to the advert report
-  DbgMsgVal("Creating the advertisement report", advUuid[0])
+  // DbgMsgVal("Creating the advertisement report", advUuid[0])
   rc = BleAdvRptAddUuid16(adRpt$,advUuid[0],advUuid[1],advUuid[2],advUuid[3],advUuid[4],advUuid[5])
   AssertRC(rc, 559)
 
@@ -960,7 +960,7 @@ function AddCharHrsMeas() as integer
   //AssertRC(rc,  927)
   //Create the Characteristic object
   // chProp = BLE_CHAR_PROPERTIES_NOTIFY | BLE_CHAR_PROPERTIES_WRITE
-  chProp = BLE_CHAR_PROPERTIES_NOTIFY
+  chProp = BLE_CHAR_PROPERTIES_NOTIFY | BLE_CHAR_PROPERTIES_WRITE
   rc = BleCharNew(chProp, BleHandleUuid16(0x2A37), mdAttr, mdCccd, mdSccd)
   AssertRC(rc,  931)
 
@@ -1067,7 +1067,6 @@ sub InitHrsService()
   rc = RegHrsService()
   AssertRC(rc,  1025)
   if rc==0 then
-    DbgMsg("Adding advertisement for service")
     AddUuid(UUID_HEART_RATE_SERVICE)
   endif
 
