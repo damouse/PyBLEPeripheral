@@ -1095,7 +1095,7 @@ function OnUartCmd(stData$, datalen) as integer
       DbgMsg("Sending to Peer")
       rc = SendData(stData$)
       AssertRC(rc, 1096)
-      DbgMsg(strvaldec(stData$))
+      DbgMsgVal("After dehexing: ", strvaldec(stData$))
 
     elseif strcmp(stRS$, "qq ") == 0 then
       DbgMsg(readBuffer$)
