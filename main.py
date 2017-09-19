@@ -1,76 +1,67 @@
+#!/usr/bin/env python3
 '''
-Entry point into Bluetooth 
+Host implementation. Communicates with the BASIC controller (which drives the LairdCP)
+through a serial connection. 
+
+Both this program and the controller itself are relatively dumb pipes-- they take very 
+little notice of whats going on with the data passing through them, and intentionally 
+only expose a pair of channels (in and out) on each of their interfaces. The controller
+has in/out endpoints on its BLE channel with Mobile, and in/out endpoints on the serial 
+connection with the host. This program may have a few more. 
 '''
-import sys
-import array
-from random import randint
 
-import dbus.exceptions
-import dbus.mainloop.glib
-import dbus.service
+import serial
+import threading
 
-try:
-    from gi.repository import GObject
-except ImportError:
-    import gobject as GObject
-
-import advertisement
-import service
-import constants
-
-# Global main loop
-mainloop = None
+# Constants
+SERIAL_PORT = '/dev/ttyAMA0'
+SERIAL_BAUDRATE = 115200
+SERIAL_TIMEOUT = 0.1
+SERIAL_RTSCTS = 1
 
 
-#
-# Handler Callbacks
-def register_ad_cb():
-    print 'Advertisement registered'
+class SerialConnection(object):
+    '''
+    Simple wrapper around a serial connection that is threadsafe
+    '''
+
+    def __init__(self, port):
+        super(SerialConneciton, self).__init__()
+        self._serial = serial.Serial(port, SERIAL_BAUDRATE, SERIAL_TIMEOUT, SERIAL_RTSCTS)
+        self._lock = threading.Lock()
+
+    def read(self):
+        '''
+        Reads a line from the serial connection. Blocks if another 
+        read() or write() is in progress
+        '''
+        with self._lock:
+            return self._serial.readline()
+
+    def write(self, msg):
+        ''' Write a message to the serial connection '''
+
+    def waiting(self):
+        return self._serial.in_waiting
 
 
-def register_ad_error_cb(error):
-    print 'Failed to register advertisement: ' + str(error)
-    mainloop.quit()
-
-
-def register_app_cb():
-    print('GATT application registered')
-
-
-def register_app_error_cb(error):
-    print('Failed to register application: ' + str(error))
-    mainloop.quit()
+conn = SerialConnection(SERIAL_PORT)
 
 
 def main():
-    global mainloop
+    first = True
 
-    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-    bus = dbus.SystemBus()
-    adapter = advertisement.find_adapter(bus)
+    while True:
+        while conn.waiting:
+            x = conn.read()
+            x = x.decode()
+            print (x)
 
-    if not adapter:
-        print('GattManager1 interface not found')
-        return
+        if first:
+            conn.write("txpower\r")
+            first = False
 
-    adapter_obj = bus.get_object(constants.BLUEZ_SERVICE_NAME, adapter)
-    adapter_props = dbus.Interface(adapter_obj, "org.freedesktop.DBus.Properties")
-    adapter_props.Set("org.bluez.Adapter1", "Powered", dbus.Boolean(1))
-
-    ad_obj = bus.get_object(constants.BLUEZ_SERVICE_NAME, adapter)
-    ad_manager = dbus.Interface(ad_obj, constants.LE_ADVERTISING_MANAGER_IFACE)
-
-    service_obj = bus.get_object(constants.BLUEZ_SERVICE_NAME, adapter)
-    service_manager = dbus.Interface(service_obj, constants.GATT_MANAGER_IFACE)
-
-    app = service.Application(bus)
-    ad = advertisement.ServiceAdvertisement(bus, 0, app)
-    mainloop = GObject.MainLoop()
-
-    service_manager.RegisterApplication(app.get_path(), {}, reply_handler=register_app_cb, error_handler=register_app_error_cb)
-    ad_manager.RegisterAdvertisement(ad.get_path(), {}, reply_handler=register_ad_cb, error_handler=register_ad_error_cb)
-
-    mainloop.run()
+    ser.close()
 
 
 if __name__ == '__main__':

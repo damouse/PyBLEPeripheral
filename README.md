@@ -1,39 +1,18 @@
 # Bluetooth Client
 
-Sample BLE peripheral implementation written in Python. Its mostly a mix of existing sources. 
+Sample BLE peripheral implementation written in two parts: controller in smartBASIC and host written in Python 3. This software is meant to run on a LairdCP BL652. 
 
-This is a Python 2.7 project because I couldn't get the `dbus` libraries installed and working on Python 3.4. It was tested on a Raspberry Pi 3 with `bluez` version 5.46.
+The BASIC controller implements a GATT server with custom UUIDs that exposes LHR-specifc characteristics as endpoints to communicate with a mobile app. Its largely a dumb tunnel with one inbound and one outbound interface both on the bluetooth side and the host side.
+
+The Python3 host interacts with the controller through the aforementioned 2 endpoints over a serial connection.
 
 ## Setup
 
-This section details how to configure a Raspberry Pi to run this code. The first section is system setup, while the second is just for this program.
+Setting up the Pi with LairdCP is not covered here, mostly because @damouse is not the one who set it up.
 
-### System Setup
+To run the controller, open `UwTerminalX`, establish a connection with the breakout board, then rightclick the screen and select `Compile and Load`, choosing `gatt_program.sb`
 
-Follow the guide [here](https://learn.adafruit.com/install-bluez-on-the-raspberry-pi/installation) to install the `bluez` stack on your RPi. The Pi I worked with to write these instructions already had a `bluez` stack installed, so I can't guarantee the instructions will get you all the way there. You'll at least need the following additional packages:
-
-```
-sudo apt-get install libdbus-glib-1-dev
-```
-
-If you still encounter issues, check out this [helpful gist](https://gist.github.com/larsblumberg/2335c0ba97f805a2b996f1a7c3ac9571) for other missing packages. 
-
-#### Experimental Mode
-
-Running `bluez` as a GATT server requires experimental mode. Open the settings file:
-
-```
-sudo nano /lib/systemd/system/bluetooth.service
-```
-
-Add the flag `--experimental` to the end of the line that begins with `ExecStart=`.
-
-Finally, restart the service:
-
-```
-sudo systemctl daemon-reload
-sudo systemctl restart bluetooth
-```
+To start the host, make sure the program is started, `UwTerminalX` is off, and then run `main.py`.
 
 ## Interacting with LaircCP BL625
 
@@ -43,17 +22,3 @@ Some common commands:
 
 - Reset the device: `at`
 - Erase memory: `at&f 1`
-
-#### Misc
-
-If the system complains about ownership issues on DBus objects, have to turn off `deny ownership` setting on the default policy for `/etc/dbus-1/system.conf`.
-
-### Client Setup
-
-Install dependencies:
-
-```
-pip install bluezero dbus-python
-```
-
-Run the main script with `python main.py`.
