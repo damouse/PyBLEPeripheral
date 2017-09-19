@@ -11,15 +11,7 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE,  DATA OR PROFITS,  WHETHER IN AN
 // ACTION OF CONTRACT,  NEGLIGENCE OR OTHER TORTIOUS ACTION,  ARISING OUT OF OR
 // IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-//
-// SPDX-License-Identifier:ISC
-//
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// +++++                                                                      ++
-// +++++  When UwTerminal downloads the app it will store it as a filenname   ++
-// +++++  which consists of all characters up to the first . and excluding it ++
-// +++++                                                                      ++
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
 // Heart Rate Profile
 //
@@ -71,35 +63,18 @@
 // Definitions
 //******************************************************************************
 
-// Create the UUID
-dim UUID_CHAR
-dim UUID_SERVICE
-
-dim uuidService$
-dim uuidChar$
-dim writableCharUuid
-
-// Char UUID
-uuidChar$ = "42a30eb7ae68454e9bc77d60b33b2584"
-uuidChar$ = StrDehexize$(uuidChar$)
-UUID_CHAR = BleHandleUuid128(uuidChar$)
-
-// Service UUID
-uuidService$ = "d4d9365fcd084024b670b0ec0d6632bd"
-uuidService$ = StrDehexize$(uuidService$)
-UUID_SERVICE = BleHandleUuid128(uuidService$)
-
+// Character buffer maxed out at 20 bytes. Incoming messages arrive here
 dim readBuffer$
 
 #set $cmpif,  0x0 //Disable battery service
 //#set $cmpif,  0x4 //Enable battery service
 
-        //This defines how the application startsup and is a bit mask.
-        //Bit 0 == 1 then OnStartup() is called just before waitevent
-        //Bit 1 == 1 then StartAds() is called just before waitevent
+//This defines how the application startsup and is a bit mask.
+//Bit 0 == 1 then OnStartup() is called just before waitevent
+//Bit 1 == 1 then StartAds() is called just before waitevent
 #define AUTO_STARTUP                      3
 
-        //Set this to 0 to disable all debugging messages
+//Set this to 0 to disable all debugging messages
 #define ENABLE_DEBUG_PRINTS               1
 
 #define DEVICENAME                        "LHR-BOT"
@@ -186,6 +161,7 @@ dim readBuffer$
 
 #define UUID_DEVICE_INFORMATION_SERVICE                   0x180A
 #define UUID_HEART_RATE_SERVICE                           0x1900
+#define UUID_OUTBOUND_CHAR                                0x1901
 
 #define BLE_SERVICE_SECONDARY                             0
 #define BLE_SERVICE_PRIMARY                               1
@@ -324,6 +300,7 @@ dim shHrs as integer        //Service handle
 dim chHrsMeas as integer    //Heart Rate Measurement Characteristic Handle
 dim chHrsLoc as integer     //Heart Rate Sensor Location Handle
 dim hMyChar as integer      // Writable Char
+dim chInbound as integer
 
 dim hrtRate                 //Heart rate in beats per minute
 dim sensLoc                 //Heart sensor location
@@ -700,18 +677,6 @@ sub InitSecurityMngr(ioCap as integer, mnLtk as integer,  mxLtk as integer)
   rc = SecSetLtkSizeRange(mnLtk, mxLtk)
 endsub
 
-//******************************************************************************
-// Handler definitions
-//******************************************************************************
-
-//******************************************************************************
-// Other initialisations
-//******************************************************************************
-
-//******************************************************************************
-// Function and Subroutine definitions
-//******************************************************************************
-
 //==============================================================================
 //==============================================================================
 sub InitGapService()
@@ -719,19 +684,6 @@ sub InitGapService()
   rc = BleGapSvcInit(DEVICENAME, DEVICENAME_WRITABLE, APPEARANCE, MIN_CONN_INTERVAL, MAX_CONN_INTERVAL, CONN_SUP_TIMEOUT, SLAVE_LATENCY)
   AssertRC(rc,  690)
 endsub
-
-
-//******************************************************************************
-// Handler definitions
-//******************************************************************************
-
-//******************************************************************************
-// Other initialisations
-//******************************************************************************
-
-//******************************************************************************
-// Function and Subroutine definitions
-//******************************************************************************
 
 //==============================================================================
 //==============================================================================
@@ -752,123 +704,6 @@ sub InitDisService()
   endif
 
 endsub
-
-//==============================================================================
-//==============================================================================
-function AddCharBatLevel(byval btlvl as integer,  byval fNfy as integer) as integer
-   dim rc
-
-#cmpif 0x04 :   if btLvl < 0 then
-#cmpif 0x04 :     btLvl = 0
-#cmpif 0x04 :   elseif btLvl > 100 then
-#cmpif 0x04 :     btLvl = 100
-#cmpif 0x04 :   endif
-
-                //Create the Battery Level Characteristic which has a UUID of 0x2A19
-#cmpif 0x04 :   dim mdAttr
-#cmpif 0x04 :   dim mdCccd
-#cmpif 0x04 :   dim mdSccd
-#cmpif 0x04 :   dim chProp 
-#cmpif 0x04 :   dim format : format = 0x04            //uint8 - Unsigned 8-bit integer
-#cmpif 0x04 :   dim exponent : exponent = 0
-#cmpif 0x04 :   dim unit : unit = 0x27AD              //Percentage
-#cmpif 0x04 :   dim namespace : namespace = 0x01      //Bluetooth SIG
-#cmpif 0x04 :   dim namespacedesc : namespacedesc = 0
-
-                //Create the metadata for the value attribure in the characteristic
-#cmpif 0x04 :   mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN, BLE_ATTR_ACCESS_NONE, 1, 0, rc)
-#cmpif 0x04 :   AssertRC(rc,  750)
-                //There is no CCCD in this characteristic
-#cmpif 0x04 :   mdCccd = BleAttrMetadata(BLE_ATTR_ACCESS_OPEN, BLE_ATTR_ACCESS_OPEN, 1, 0, rc)
-#cmpif 0x04 :   AssertRC(rc,  753)
-                //There is no SCCD in this characteristic
-#cmpif 0x04 :   mdSccd = BLE_CHAR_METADATA_ATTR_NOT_PRESENT
-                //Create the Characteristic object
-#cmpif 0x04 :   chProp = BLE_CHAR_PROPERTIES_READ | BLE_CHAR_PROPERTIES_NOTIFY
-#cmpif 0x04 :   rc = BleCharNew(chProp, BleHandleUuid16(0x2A19), mdAttr, mdCccd, mdSccd)
-#cmpif 0x04 :   AssertRC(rc,  759)
-
-                //Add the PRESENTATION FORMAT Descriptor
-#cmpif 0x04 :   rc = BleCharDescPrstnFrmt(format, exponent, unit, namespace, namespacedesc)
-#cmpif 0x04 :   AssertRC(rc,  763)
-
-                //Commit the characteristic
-#cmpif 0x04 :   rc = BleEncode8(batlvl$, btlvl, 0)
-#cmpif 0x04 :   rc = BleCharCommit(shBat, batlvl$, chBatlvl)
-#cmpif 0x04 :   AssertRC(rc,  768)
-
-endfunc rc
-
-//==============================================================================
-//==============================================================================
-function RegBatService(byval btlvl as integer,  byval fNfy as integer) as integer
-    dim rc
-
-                //Create a battery PRIMARY service attribute which has a uuid of 0x180F
-#cmpif 0x04 :   rc = BleServiceNew(BLE_SERVICE_PRIMARY, BleHandleUuid16(0x180F), shBat)
-#cmpif 0x04 :   AssertRC(rc,  779)
-
-                //Create the Battery Level Characteristic which has a UUID of 0x2A19
-#cmpif 0x04 :   rc = AddCharBatLevel(btlvl, fNfy)
-#cmpif 0x04 :   AssertRC(rc,  783)
-
-                //Commit battery service to GATT table
-#cmpif 0x04 :   rc=BleServiceCommit(shBat)
-#cmpif 0x04 :   AssertRC(rc,  787)
-
-endfunc rc
-
-
-//==============================================================================
-//==============================================================================
-sub InitBatService(byval batlvl as integer,  byval fNfy as integer)
-#cmpif 0x04 :   dim rc
-
-#cmpif 0x04 :   rc = RegBatService(batlvl, fNfy)
-#cmpif 0x04 :   if rc==0 then
-#cmpif 0x04 :      AddUuid(UUID_BATTERY_SERVICE)
-#cmpif 0x04 :   endif
-
-endsub
-
-
-//==============================================================================
-//==============================================================================
-function VerifyBattLevel(battLvl)
-#cmpif 0x04 :   if battLvl < 0 then
-#cmpif 0x04 :     battLvl = 0
-#cmpif 0x04 :   elseif battLvl > 100 then
-#cmpif 0x04 :     battLvl = 100
-#cmpif 0x04 :   endif
-endfunc battLvl  
-
-
-//==============================================================================
-//==============================================================================
-function SetBattLevel(btLvl as integer) as integer
-  dim rc
-
-#cmpif 0x04 :   btLvl = VerifyBattLevel(btLvl)
-
-#cmpif 0x04 :   rc = BleEncode8(batlvl$, btlvl, 0)
-#cmpif 0x04 :   rc = BleCharValueWrite(chBatlvl, batlvl$)
-#cmpif 0x04 :   AssertRC(rc,  825)
-
-endfunc rc
-
-
-//==============================================================================
-//==============================================================================
-function NotifyBattLevel(btLvl as integer) as integer
-  dim rc
-
-#cmpif 0x04 :   btLvl = VerifyBattLevel(btLvl)
-
-#cmpif 0x04 :   rc = BleEncode8(batlvl$, btlvl, 0)
-#cmpif 0x04 :   rc = BleCharValueNotify(chBatlvl, batlvl$)
-#cmpif 0x04 :   AssertRC(rc,  839)
-
-endfunc rc
 
 //==============================================================================
 // Data to encode is in hrtRate, sensCntct, hRing
@@ -962,31 +797,43 @@ function AddCharHrsMeas() as integer
   // HrsEncode()
 
   readBuffer$ = "Hi"
-  rc = BleCharCommit(shHrs, readBuffer$, chHrsMeas)
+  rc = BleCharCommit(shHrs, readBuffer$, chInbound)
   AssertRC(rc,  938)
 endfunc rc
 
 
 //==============================================================================
-// Heart Sensor Location Characteristic
 //==============================================================================
-function AddCharHrsSensLoc() as integer
-   DIM rc, at$, attr$, adRpt$, addr$, scRpt$
-   attr$="Hi"
+function AddNotifyChar() as integer
+  dim rc, mdAttr, mdCccd, mdSccd, chProp
 
-   DIM charMet : charMet = BleAttrMetaData(1,0,20,0,rc)
-   DIM mdSccd : mdSccd = BleAttrMetadata(1,1,2,0,rc)
+  //Create the metadata for the value attribute in the characteristic
+  //Heart Rate attribute has variable length
+  mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_NONE,BLE_ATTR_ACCESS_NONE,MAX_HRM_LEN,1,rc)
+  AssertRC(rc, 921)
 
-   //initialise char, read enabled, accept signed writes, broadcast capable
-   rc=BleCharNew(0x03,BleHandleUuid16(0x2A38), charMet, 0, mdSccd)
+  //There is a CCCD in this characteristic
+  mdCccd=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN,BLE_ATTR_ACCESS_OPEN,2,0,rc)
+  AssertRC(rc, 924)
 
-   //commit char initialised above, with initial value "hi" to service 'hMyChar'
-   rc=BleCharCommit(shHrs, attr$, hMyChar)
+  //There is no SCCD in this characteristic
+  mdSccd = BLE_CHAR_METADATA_ATTR_NOT_PRESENT
+
+  //AssertRC(rc, 927)
+  //Create the Characteristic object
+  chProp = BLE_CHAR_PROPERTIES_NOTIFY
+  rc = BleCharNew(chProp,BleHandleUuid16(UUID_OUTBOUND_CHAR),mdAttr,mdCccd,mdSccd)
+  AssertRC(rc, 931)
+
+  //Commit the characteristic
+  HrsEncode()
+  rc = BleCharCommit(shHrs,hrs$,chHrsMeas)
+  AssertRC(rc, 938)
 
 endfunc rc
 
 //==============================================================================
-// Heart Service
+// Heart Service Register
 //==============================================================================
 function RegHrsService() as integer
   dim rc
@@ -999,9 +846,9 @@ function RegHrsService() as integer
   rc = AddCharHrsMeas()
   AssertRC(rc,  994)
 
-  //Create the READ characteristic
-  // rc = AddCharHrsSensLoc()
-  // AssertRC(rc,  998)
+  //Create the NOTIFY characteristic
+  rc = AddNotifyChar()
+  AssertRC(rc,  998)
   
   //Commit Heart Rate service to GATT table
   rc=BleServiceCommit(shHrs)
@@ -1009,6 +856,9 @@ function RegHrsService() as integer
 
 endfunc rc
 
+//==============================================================================
+// Heart Service Init
+//==============================================================================
 sub InitHrsService()
   dim rc
 
@@ -1439,10 +1289,10 @@ endfunc 1
 //==============================================================================  
 FUNCTION HndlrChar(BYVAL chrHndl, BYVAL offset, BYVAL len)  
     dim s$, rc
-    IF chrHndl == chHrsMeas THEN
+    IF chrHndl == chInbound THEN
         PRINT "\n";len;" byte(s) have been written to char value attribute from offset ";offset
         
-        rc=BleCharValueRead(chHrsMeas,s$)
+        rc=BleCharValueRead(chInbound,s$)
         AssertRC(rc, 1459)
         PRINT "\nNew Char Value: ";s$
     ENDIF
