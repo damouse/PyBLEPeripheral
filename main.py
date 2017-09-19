@@ -64,9 +64,7 @@ class SerialConnection(object):
     def write(self, msg):
         ''' Write a message to the serial connection. Blocks on concurrent reads or writes'''
         msg += '\r'
-
-        with self._lock:
-            self._serial.write(msg.encode())
+        self._serial.write(msg.encode())
 
     def waiting(self):
         return self._serial.in_waiting
@@ -80,6 +78,7 @@ class SerialConnection(object):
 def main():
     conn = SerialConnection(SERIAL_PORT)
     conn.open()
+    conn.write("txpower")
     conn.blockspin()
 
     # first = True
