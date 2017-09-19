@@ -1229,7 +1229,7 @@ function OnUartCmd(stData$, datalen) as integer
 
     elseif strcmp(stRS$, "qq ") == 0 then
       DbgMsg(readBuffer$)
-      DbgMsg(strvaldec(readBuffer$))
+      DbgInfo(strvaldec(readBuffer$))
 
     elseif strcmp(stRS$, "db ")==0 then
       DbgInfo(strvaldec(stData$))
