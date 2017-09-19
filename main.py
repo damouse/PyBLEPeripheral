@@ -57,11 +57,12 @@ class SerialConnection(object):
 
         print("Starting Read")
 
-        while self._serial.in_waiting:
-            print(x)
-            x = self._serial.readline()
-            x = x.decode()
-            self.queue.put(x)
+        while True:
+            while self._serial.in_waiting:
+                print(x)
+                x = self._serial.readline()
+                x = x.decode()
+                self.queue.put(x)
 
     def write(self, msg):
         ''' Write a message to the serial connection. Blocks on concurrent reads or writes'''
@@ -72,8 +73,8 @@ class SerialConnection(object):
         return self._serial.in_waiting
 
     def blockspin(self):
-        self.read()
-        return
+        # self.read()
+        # return
         while self.is_open:
             msg = self.queue.get()
             print("Have message: ", msg)
