@@ -978,6 +978,7 @@ function AddCharHrsSensLoc() as integer
 
    DIM charMet : charMet = BleAttrMetaData(1,0,20,0,rc)
    DIM mdSccd : mdSccd = BleAttrMetadata(1,1,2,0,rc)
+   dim mdCccd
 
      //There is a CCCD in this characteristic
   mdCccd=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN, BLE_ATTR_ACCESS_OPEN, 2, 0, rc)
