@@ -39,29 +39,6 @@ FUNCTION OnStartup()
     // Advertisements
     //
 
-    // sub InitAdvReports(advFlags as integer)
-
-    //Create a minimal advertise report
-    // rc = BleAdvRptInit(adRpt$, advFlags, ADV_APPEARANCE, MAX_DEVNAME_CHRS)
-    // AssertRC(rc,  555)
-
-    //Append the uuid list to the advert report
-    // DbgMsgVal("Creating the advertisement report", advUuid[0])
-    // rc = BleAdvRptAddUuid16(adRpt$,advUuid[0],advUuid[1],advUuid[2],advUuid[3],advUuid[4],advUuid[5])
-    // AssertRC(rc, 559)
-
-    //Initialise an empty scan report
-    // rc = BleScanRptInit(scRpt$)
-    // AssertRC(rc,  563)
-
-    // rc = BleAdvRptAddUuid128(scRpt$, UUID_SERVICE)
-    // AssertRC(rc,  559)
-
-    //Commit the advert and scan report to the scan
-    // rc = BleAdvRptsCommit(adRpt$, scRpt$)
-    // AssertRC(rc,  567)
-    // End Other Adbs
-
     rc=BleAdvRptInit(adRpt$,0x02,0,20)
     AssertRc(rc, 55) 
 
@@ -74,7 +51,7 @@ FUNCTION OnStartup()
     rc=BleAdvRptsCommit(adRpt$,scRpt$)
     AssertRC(rc, 61)
 
-    rc=BleAdvertStart(0, addr$, 150, 0, 0)
+    rc=BleAdvertStart(1, addr$, 150, 0, 0)
     AssertRC(rc, 64)
 
 ENDFUNC rc
