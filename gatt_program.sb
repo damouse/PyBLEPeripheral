@@ -185,7 +185,7 @@ UUID_SERVICE = BleHandleUuid128(uuidService$)
 
 // #define UUID_BATTERY_SERVICE                              0x180F
 #define UUID_DEVICE_INFORMATION_SERVICE                   0x180A
-// #define UUID_HEART_RATE_SERVICE                           0x180D
+#define UUID_HEART_RATE_SERVICE                           0x180D
 
 #define BLE_SERVICE_SECONDARY                             0
 #define BLE_SERVICE_PRIMARY                               1
