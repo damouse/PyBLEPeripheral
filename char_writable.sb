@@ -51,7 +51,7 @@ FUNCTION OnStartup()
     rc=BleAdvRptsCommit(adRpt$,scRpt$)
     AssertRC(rc, 61)
 
-    rc=BleAdvertStart(1, addr$, 150, 0, 0)
+    rc=BleAdvertStart(0, addr$, 20, 3000000, 0)
     AssertRC(rc, 64)
 
 ENDFUNC rc
