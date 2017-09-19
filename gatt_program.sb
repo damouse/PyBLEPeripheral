@@ -1228,7 +1228,7 @@ function OnUartCmd(stData$, datalen) as integer
 #cmpif 0x04 :       rc =SetBattLevel(strvaldec(stData$))
 
     elseif strcmp(stRS$, "dp ")==0 then
-      DbgInfo(strvaldec(hrs$))
+      DbgInfo(hrs$)
 
     elseif strcmp(stRS$, "db ")==0 then
       DbgInfo(strvaldec(stData$))
