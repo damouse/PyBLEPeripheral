@@ -581,7 +581,8 @@ sub InitAdvReports(advFlags as integer)
 
   //Append the uuid list to the advert report
   DbgMsgVal("Creating the advertisement report", advUuid[0])
-  // rc = BleAdvRptAddUuid16(adRpt$, advUuid[0], advUuid[1], advUuid[2], advUuid[3], advUuid[4], advUuid[5])
+  rc = BleAdvRptAddUuid16(adRpt$,advUuid[0],advUuid[1],advUuid[2],advUuid[3],advUuid[4],advUuid[5])
+  AssertRC(rc, 559)
 
   //Initialise an empty scan report
   rc = BleScanRptInit(scRpt$)
@@ -947,11 +948,14 @@ function AddCharHrsMeas() as integer
   //++++
   mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_NONE, BLE_ATTR_ACCESS_NONE, MAX_HRM_LEN, 1, rc)
   AssertRC(rc,  921)
+
   //There is a CCCD in this characteristic
   mdCccd=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN, BLE_ATTR_ACCESS_OPEN, 2, 0, rc)
   AssertRC(rc,  924)
+
   //There is no SCCD in this characteristic
   mdSccd = BLE_CHAR_METADATA_ATTR_NOT_PRESENT
+
   //AssertRC(rc,  927)
   //Create the Characteristic object
   // chProp = BLE_CHAR_PROPERTIES_NOTIFY | BLE_CHAR_PROPERTIES_WRITE
@@ -1026,12 +1030,12 @@ function RegHrsService() as integer
   AssertRC(rc,  990)
 
   //Create the Heart Rate Measurement Characteristic which has a UUID of 0x2A37
-  rc = AddCharHrsMeas()
-  AssertRC(rc,  994)
+  // rc = AddCharHrsMeas()
+  // AssertRC(rc,  994)
 
   //Create the READ characteristic
-  rc = AddCharHrsSensLoc()
-  AssertRC(rc,  998)
+  // rc = AddCharHrsSensLoc()
+  // AssertRC(rc,  998)
   
   //Commit Heart Rate service to GATT table
   rc=BleServiceCommit(shHrs)
