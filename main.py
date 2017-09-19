@@ -63,7 +63,7 @@ def main():
         beb = conn._serial.in_waiting
 
         while beb > 0:
-            print("Waiting with bytes: {beb}")
+            print(f"Waiting with bytes: {beb}")
             x = conn.read()
             x = x.decode()
             print(x)
