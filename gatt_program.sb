@@ -1,15 +1,15 @@
-// Copyright (c) 2014,  Laird
+// Copyright (c) 2014, Laird
 //
-// Permission to use,  copy,  modify,  and/or distribute this software for any
-// purpose with or without fee is hereby granted,  provided that the above
+// Permission to use, copy, modify, and/or distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
 // copyright notice and this permission notice appear in all copies.
 //
 // THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
 // WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
 // MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
-// SPECIAL,  DIRECT,  INDIRECT,  OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-// WHATSOEVER RESULTING FROM LOSS OF USE,  DATA OR PROFITS,  WHETHER IN AN
-// ACTION OF CONTRACT,  NEGLIGENCE OR OTHER TORTIOUS ACTION,  ARISING OUT OF OR
+// SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
 // IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // SPDX-License-Identifier:ISC
@@ -32,7 +32,7 @@
 //     ai nnnn           - Set advertising interval in milliseconds
 //     at nnnn           - Set advertising timeout in milliseconds
 //     tp nnnn           - Set tx power to that specified
-//     sc n              - Set sensor contact,  n=0 for not,  1 for contact
+//     sc n              - Set sensor contact, n=0 for not, 1 for contact
 //     ad n              - If n=0 then stop adverts otherwise start adverts if
 //                            n=1 then ADV_IND
 //                            n=2 then ADV_DIRECT_IND
@@ -71,27 +71,8 @@
 // Definitions
 //******************************************************************************
 
-// Create the UUID
-dim UUID_CHAR
-dim UUID_SERVICE
-
-dim uuidService$
-dim uuidChar$
-dim writableCharUuid
-
-// Char UUID
-uuidChar$ = "42a30eb7ae68454e9bc77d60b33b2584"
-uuidChar$ = StrDehexize$(uuidChar$)
-UUID_CHAR = BleHandleUuid128(uuidChar$)
-
-// Service UUID
-uuidService$ = "d4d9365fcd084024b670b0ec0d6632bd"
-uuidService$ = StrDehexize$(uuidService$)
-UUID_SERVICE = BleHandleUuid128(uuidService$)
-
-
-#set $cmpif,  0x0 //Disable battery service
-//#set $cmpif,  0x4 //Enable battery service
+//#set $cmpif, 0x0 //Disable battery service
+#set $cmpif, 0x4 //Enable battery service
 
         //This defines how the application startsup and is a bit mask.
         //Bit 0 == 1 then OnStartup() is called just before waitevent
@@ -101,7 +82,7 @@ UUID_SERVICE = BleHandleUuid128(uuidService$)
         //Set this to 0 to disable all debugging messages
 #define ENABLE_DEBUG_PRINTS               1
 
-#define DEVICENAME                        "LHR-BOT"
+#define DEVICENAME                        "LAIRD_HRM"
 #define DEVICENAME_WRITABLE               1
 #define APPEARANCE                        BLE_APPEARANCE_GENERIC_HEART_RATE_SENSOR
 #define MANF_NAME                         "Laird Technologies"
@@ -125,7 +106,7 @@ UUID_SERVICE = BleHandleUuid128(uuidService$)
 #define SLAVE_LATENCY                     1
         //Connection supervisory timeout (4 seconds) - max 32 seconds
 #define CONN_SUP_TIMEOUT                  4000000
-        //DiscoverableMode,  set to BLE_DISCOVERABILITY_xxx
+        //DiscoverableMode, set to BLE_DISCOVERABILITY_xxx
 #define DISCOVERY_MODE                    BLE_DISCOVERABILITY_GENERAL
 #define MAX_DEVNAME_CHRS                  10
         //Set Appearance advertise 0 to suppress
@@ -165,7 +146,7 @@ UUID_SERVICE = BleHandleUuid128(uuidService$)
 #define BLE_INVALID_SERVICE_HANDLE                        0
 #define CIRCBUFFER_INVALID_HANDLE                         -1
 
-//Set BLE_DISCOVERABILITY_NONE if whitelist is enabled in 
+//Set BLE_DISCOVERABILITY_NONE if whitelist is enabled in BleAdvertStart()
 //as the 4.0 spec says if whitelist is enabled then discoverability is not allowed
 #define BLE_DISCOVERABILITY_NONE                          0
 #define BLE_DISCOVERABILITY_LIMITED                       1
@@ -183,9 +164,9 @@ UUID_SERVICE = BleHandleUuid128(uuidService$)
 #define BLE_APPEARANCE_GENERIC_HEART_RATE_SENSOR          832
 #define BLE_APPEARANCE_HEART_RATE_SENSOR_HEART_RATE_BELT  833
 
-// #define UUID_BATTERY_SERVICE                              0x180F
+#define UUID_BATTERY_SERVICE                              0x180F
 #define UUID_DEVICE_INFORMATION_SERVICE                   0x180A
-// #define UUID_HEART_RATE_SERVICE                           0x180D
+#define UUID_HEART_RATE_SERVICE                           0x180D
 
 #define BLE_SERVICE_SECONDARY                             0
 #define BLE_SERVICE_PRIMARY                               1
@@ -235,8 +216,8 @@ UUID_SERVICE = BleHandleUuid128(uuidService$)
 #define BLE_EVBLEMSGID_SERVICE_ERROR                      4   //msgCtx = resultcode
 #define BLE_EVBLEMSGID_DISPLAY_PASSKEY                    9   //msgCtx = passcode to display
 #define BLE_EVBLEMSGID_NEW_BOND                           10  //msgCtx = connection handle
-#define BLE_EVBLEMSGID_AUTH_KEY_REQUEST                   11  //msgCtx = 1 for passkey,  2 for 16 byte OOB data
-#define BLE_EVBLEMSGID_HRS_NOTIFICATION_STATE             12  //msgCtx = new notification state 0=off,  1=on
+#define BLE_EVBLEMSGID_AUTH_KEY_REQUEST                   11  //msgCtx = 1 for passkey, 2 for 16 byte OOB data
+#define BLE_EVBLEMSGID_HRS_NOTIFICATION_STATE             12  //msgCtx = new notification state 0=off, 1=on
 #define BLE_EVBLEMSGID_CONN_PARMS_UPDATE                  14  //msgCtx = connection handle
 #define BLE_EVBLEMSGID_CONN_PARMS_UPDATE_FAIL             15  //msgCtx = connection handle
 #define BLE_EVBLEMSGID_CONN_TO_BONDED_MASTER              16  //msgCtx = connection handle
@@ -263,7 +244,7 @@ UUID_SERVICE = BleHandleUuid128(uuidService$)
 
 //==============================================================================
 //==============================================================================
-sub AssertRC(byval rc as integer, byval tag as integer)
+sub AssertRC(byval rc as integer,byval tag as integer)
   if (ENABLE_DEBUG_PRINTS!=0) && (rc!=0) then
     print "Failed with ";integer.h' rc;" at tag ";tag;"\n"
   endif
@@ -279,7 +260,7 @@ endsub
 
 //==============================================================================
 //==============================================================================
-sub DbgMsgVal(byval msg$ as string,  byval vl as integer)
+sub DbgMsgVal(byval msg$ as string, byval vl as integer)
   if (ENABLE_DEBUG_PRINTS!=0) then
     print msg$;" ";vl;"\n"
   endif
@@ -297,7 +278,7 @@ endsub
 // Global Variable Declarations
 //******************************************************************************
 
-dim advState                //Will be 0 if not advertising,  1, 2, 3, 4 for the four advert types
+dim advState                //Will be 0 if not advertising, 1,2,3,4 for the four advert types
 dim advType                 //As per ADV_ in ble.sblib
 dim addr$                   //Peer address for Directed Adverts (MSB first) and exactly 6 bytes long
 dim advInt                  //Adv interval in milliseconds
@@ -331,7 +312,7 @@ dim hrs$ as string          //hrs measurement attribute
 dim hRing                   //Handle for the rr ring buffer
 
 dim stRsp$ as string        //Uart rx data is stored here
-dim ok$, er$
+dim ok$,er$
 dim msg$
 dim mnltk                   //Min size of ltk
 dim mxltk                   //Max size of ltk
@@ -394,7 +375,7 @@ sensLoc  = BLE_HRS_BODY_SENSOR_LOCATION_CHEST  //See lib/ble.sblib for more defi
 //==============================================================================
 // returns 0 if parameters are acceptable
 //==============================================================================
-function SetAdvertType(byval adType as integer, byref ad$ as string) as integer
+function SetAdvertType(byval adType as integer,byref ad$ as string) as integer
   if (adType>=ADV_IND)&&(adType<=ADV_NONCONN_IND) then
     if (adType==ADV_DIRECT_IND) then
       if (strlen(ad$)!=6)  then
@@ -455,7 +436,7 @@ function SetAdvertFPol(fpol as integer) as integer
 endfunc 0
 
 //==============================================================================
-// Returns 0 if successful,  otherwise appropriate error code
+// Returns 0 if successful, otherwise appropriate error code
 //==============================================================================
 function StopAdverts() as integer
   dim rc
@@ -463,7 +444,7 @@ function StopAdverts() as integer
   if advState != 0 then
     //Currently advertising
     rc = BleAdvertStop()
-    AssertRC(rc,  447)
+    AssertRC(rc, 447)
     if rc==0 then
       //Adverts stopped successfully
       advState=0
@@ -478,7 +459,7 @@ endfunc rc
 //  2 ADV_SCAN_IND
 //  3 ADV_NONCONN_IND
 //
-// Returns 0 if successful,  otherwise appropriate error code
+// Returns 0 if successful, otherwise appropriate error code
 //==============================================================================
 function StartAdverts(adv as integer) as integer
   dim rc
@@ -489,11 +470,11 @@ function StartAdverts(adv as integer) as integer
     elseif (adv<0)||(adv>3) then
       //Invalid advertising type
       rc=0xEF01
-      AssertRC(rc,  473)
+      AssertRC(rc, 473)
       exitfunc rc
     endif
-    rc = BleAdvertStart(adv, addr$, advInt, advTmout, advFilPol)
-    AssertRC(rc,  477)
+    rc = BleAdvertStart(adv,addr$,advInt,advTmout,advFilPol)
+    AssertRC(rc, 477)
     //
     //Warning: If you get an error here it is most likely that you
     //         have limited discoverability and the advert timeout is > 180000
@@ -506,7 +487,7 @@ function StartAdverts(adv as integer) as integer
   else
     //Currently advertising
     rc=0xEF00
-    AssertRC(rc,  490)
+    AssertRC(rc, 490)
   endif
 endfunc rc
 
@@ -514,7 +495,7 @@ endfunc rc
 //==============================================================================
 // MUST be called from the BLE message handler
 //==============================================================================
-sub AdvMngrOnBleMsg(BYVAL nMsgId AS INTEGER,  BYVAL nCtx AS INTEGER)
+sub AdvMngrOnBleMsg(BYVAL nMsgId AS INTEGER, BYVAL nCtx AS INTEGER)
   dim rc
 
   select nMsgId
@@ -524,7 +505,7 @@ sub AdvMngrOnBleMsg(BYVAL nMsgId AS INTEGER,  BYVAL nCtx AS INTEGER)
   case BLE_EVBLEMSGID_DISCONNECT
     //Restart advertising
     rc=StartAdverts(-1)
-    AssertRC(rc,  508)
+    AssertRC(rc, 508)
 
   case else
     //Do nothing
@@ -545,13 +526,7 @@ endfunc advState
 sub AddUuid(nUuid as integer)
   if advUuidCnt < 5 then
     advUuid[advUuidCnt]=nUuid
-    
-    DbgMsgVal("Added service uuid at position", advUuidCnt)
-    DbgMsgVal("Uuid: ", nUuid)
-
     advUuidCnt = advUuidCnt + 1
-  else 
-    DbgMsg("Unable to add UUID-- overflow")
   endif
 endsub
 
@@ -565,7 +540,7 @@ sub InitAdvReports(advFlags as integer)
   scRpt$=""
 
   //If whitelist filter policy is enabled and there is at least one master
-  //in the bonding manager,  then need to reset the advFlags so that
+  //in the bonding manager, then need to reset the advFlags so that
   //discoverability is disabled
   if advFilPol != ADV_FILTERPOLICY_ANY then
     //Filter policy has been enabled
@@ -576,23 +551,20 @@ sub InitAdvReports(advFlags as integer)
   endif
 
   //Create a minimal advertise report
-  rc = BleAdvRptInit(adRpt$, advFlags, ADV_APPEARANCE, MAX_DEVNAME_CHRS)
-  AssertRC(rc,  555)
+  rc = BleAdvRptInit(adRpt$,advFlags,ADV_APPEARANCE,MAX_DEVNAME_CHRS)
+  AssertRC(rc, 555)
 
   //Append the uuid list to the advert report
-  DbgMsgVal("Creating the advertisement report", advUuid[0])
-  // rc = BleAdvRptAddUuid16(adRpt$, advUuid[0], advUuid[1], advUuid[2], advUuid[3], advUuid[4], advUuid[5])
+  rc = BleAdvRptAddUuid16(adRpt$,advUuid[0],advUuid[1],advUuid[2],advUuid[3],advUuid[4],advUuid[5])
+  AssertRC(rc, 559)
 
   //Initialise an empty scan report
   rc = BleScanRptInit(scRpt$)
-  AssertRC(rc,  563)
-
-  rc = BleAdvRptAddUuid128(scRpt$, UUID_SERVICE)
-  AssertRC(rc,  559)
+  AssertRC(rc, 563)
 
   //Commit the advert and scan report to the scan
-  rc = BleAdvRptsCommit(adRpt$, scRpt$)
-  AssertRC(rc,  567)
+  rc = BleAdvRptsCommit(adRpt$,scRpt$)
+  AssertRC(rc, 567)
 
 endsub
 
@@ -601,24 +573,24 @@ endsub
 function ScanReportInit()
   dim rc
   rc = BleScanRptInit(scRpt$)
-  AssertRC(rc,  576)
+  AssertRC(rc, 576)
 endfunc rc
 
 //==============================================================================
 //==============================================================================
-function ScanReportAppend(nTag as integer,  byref adData$ as string)
+function ScanReportAppend(nTag as integer, byref adData$ as string)
   dim rc
-  rc = BleAdvRptAppendAD(scRpt$, nTag, adData$)
-  AssertRC(rc,  584)
+  rc = BleAdvRptAppendAD(scRpt$,nTag,adData$)
+  AssertRC(rc, 584)
 endfunc rc
 
 //==============================================================================
 //==============================================================================
 function ScanReportCommit()
-  dim rc, rpt$
+  dim rc,rpt$
   rpt$=""
-  rc = BleAdvRptsCommit(rpt$, scRpt$)
-  AssertRC(rc,  593)
+  rc = BleAdvRptsCommit(rpt$,scRpt$)
+  AssertRC(rc, 593)
 endfunc rc
 
 //******************************************************************************
@@ -631,7 +603,7 @@ endfunc rc
 function Disconnect(hc as integer) as integer
   dim rc
   rc = BleDisconnect(hc)
-  AssertRC(rc,  606)
+  AssertRC(rc, 606)
 endfunc rc
 
 //==============================================================================
@@ -639,15 +611,15 @@ endfunc rc
 //==============================================================================
 function ConnNewParms(hc as integer) as integer
   dim rc
-  rc = BleSetCurConnParms(hc, minint, maxint, sprtout, slatncy)
-  AssertRC(rc,  615)
+  rc = BleSetCurConnParms(hc,minint,maxint,sprtout,slatncy)
+  AssertRC(rc, 615)
 endfunc rc
 
 
 //==============================================================================
 // MUST be called from the BLE message handler
 //==============================================================================
-sub ConnMngrOnBleMsg(BYVAL nMsgId AS INTEGER,  BYVAL nCtx AS INTEGER)
+sub ConnMngrOnBleMsg(BYVAL nMsgId AS INTEGER, BYVAL nCtx AS INTEGER)
   select nMsgId
   case BLE_EVBLEMSGID_CONNECT
     hConn = nCtx
@@ -666,11 +638,11 @@ endsub
 
 //==============================================================================
 //==============================================================================
-function SecSendPassKey(hc as integer,  byval ky as integer) as integer
+function SecSendPassKey(hc as integer, byval ky as integer) as integer
   dim rc
   if hc != BLE_CONN_HANDLE_INVALID then
-    rc = BleSecMngrPassKey(hc, ky)
-    AssertRC(rc,  645)
+    rc = BleSecMngrPassKey(hc,ky)
+    AssertRC(rc, 645)
   endif
 endfunc rc
 
@@ -679,23 +651,23 @@ endfunc rc
 function SecSetIoCap(ioCap as integer) as integer
   dim rc
   rc = BleSecMngrIocap(iocap)
-  AssertRC(rc,  654)
+  AssertRC(rc, 654)
 endfunc rc
 
 //==============================================================================
 //==============================================================================
-function SecSetLtkSizeRange(mnLtk as integer,  mxLtk as integer) as integer
+function SecSetLtkSizeRange(mnLtk as integer, mxLtk as integer) as integer
   dim rc
-  rc = BleSecMngrKeySizes(mnLtk, mxLtk)
-  AssertRC(rc,  662)
+  rc = BleSecMngrKeySizes(mnLtk,mxLtk)
+  AssertRC(rc, 662)
 endfunc rc
 
 //==============================================================================
 //==============================================================================
-sub InitSecurityMngr(ioCap as integer, mnLtk as integer,  mxLtk as integer)
+sub InitSecurityMngr(ioCap as integer,mnLtk as integer, mxLtk as integer)
   dim rc
   rc = SecSetIoCap(ioCap)
-  rc = SecSetLtkSizeRange(mnLtk, mxLtk)
+  rc = SecSetLtkSizeRange(mnLtk,mxLtk)
 endsub
 
 //******************************************************************************
@@ -714,8 +686,8 @@ endsub
 //==============================================================================
 sub InitGapService()
   dim rc
-  rc = BleGapSvcInit(DEVICENAME, DEVICENAME_WRITABLE, APPEARANCE, MIN_CONN_INTERVAL, MAX_CONN_INTERVAL, CONN_SUP_TIMEOUT, SLAVE_LATENCY)
-  AssertRC(rc,  690)
+  rc = BleGapSvcInit(DEVICENAME,DEVICENAME_WRITABLE,APPEARANCE,MIN_CONN_INTERVAL,MAX_CONN_INTERVAL,CONN_SUP_TIMEOUT,SLAVE_LATENCY)
+  AssertRC(rc, 690)
 endsub
 
 
@@ -734,26 +706,26 @@ endsub
 //==============================================================================
 //==============================================================================
 sub InitDisService()
-  dim mf$, md$, sy$, rl$
+  dim mf$,md$,sy$,rl$
   dim rc
 
   mf$=MANF_NAME
   md$=MODELSTR
   rl$=REGLIST
   sy$=SYSID
-  rc = BleSvcRegDevInfo(mf$, md$, SERIALNUM, HWREV, SWREV, sy$, rl$, PNPID)
+  rc = BleSvcRegDevInfo(mf$,md$,SERIALNUM,HWREV,SWREV,sy$,rl$,PNPID)
 
   if (rc==0) || (rc==RESCODE_BLE_SVC_REGISTERED) then
      AddUuid(UUID_DEVICE_INFORMATION_SERVICE)
   else
-    AssertRC(rc,  721)
+    AssertRC(rc, 721)
   endif
 
 endsub
 
 //==============================================================================
 //==============================================================================
-function AddCharBatLevel(byval btlvl as integer,  byval fNfy as integer) as integer
+function AddCharBatLevel(byval btlvl as integer, byval fNfy as integer) as integer
    dim rc
 
 #cmpif 0x04 :   if btLvl < 0 then
@@ -774,55 +746,55 @@ function AddCharBatLevel(byval btlvl as integer,  byval fNfy as integer) as inte
 #cmpif 0x04 :   dim namespacedesc : namespacedesc = 0
 
                 //Create the metadata for the value attribure in the characteristic
-#cmpif 0x04 :   mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN, BLE_ATTR_ACCESS_NONE, 1, 0, rc)
-#cmpif 0x04 :   AssertRC(rc,  750)
+#cmpif 0x04 :   mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN,BLE_ATTR_ACCESS_NONE,1,0,rc)
+#cmpif 0x04 :   AssertRC(rc, 750)
                 //There is no CCCD in this characteristic
-#cmpif 0x04 :   mdCccd = BleAttrMetadata(BLE_ATTR_ACCESS_OPEN, BLE_ATTR_ACCESS_OPEN, 1, 0, rc)
-#cmpif 0x04 :   AssertRC(rc,  753)
+#cmpif 0x04 :   mdCccd = BleAttrMetadata(BLE_ATTR_ACCESS_OPEN,BLE_ATTR_ACCESS_OPEN,1,0,rc)
+#cmpif 0x04 :   AssertRC(rc, 753)
                 //There is no SCCD in this characteristic
 #cmpif 0x04 :   mdSccd = BLE_CHAR_METADATA_ATTR_NOT_PRESENT
                 //Create the Characteristic object
 #cmpif 0x04 :   chProp = BLE_CHAR_PROPERTIES_READ | BLE_CHAR_PROPERTIES_NOTIFY
-#cmpif 0x04 :   rc = BleCharNew(chProp, BleHandleUuid16(0x2A19), mdAttr, mdCccd, mdSccd)
-#cmpif 0x04 :   AssertRC(rc,  759)
+#cmpif 0x04 :   rc = BleCharNew(chProp,BleHandleUuid16(0x2A19),mdAttr,mdCccd,mdSccd)
+#cmpif 0x04 :   AssertRC(rc, 759)
 
                 //Add the PRESENTATION FORMAT Descriptor
-#cmpif 0x04 :   rc = BleCharDescPrstnFrmt(format, exponent, unit, namespace, namespacedesc)
-#cmpif 0x04 :   AssertRC(rc,  763)
+#cmpif 0x04 :   rc = BleCharDescPrstnFrmt(format,exponent,unit,namespace,namespacedesc)
+#cmpif 0x04 :   AssertRC(rc, 763)
 
                 //Commit the characteristic
-#cmpif 0x04 :   rc = BleEncode8(batlvl$, btlvl, 0)
-#cmpif 0x04 :   rc = BleCharCommit(shBat, batlvl$, chBatlvl)
-#cmpif 0x04 :   AssertRC(rc,  768)
+#cmpif 0x04 :   rc = BleEncode8(batlvl$,btlvl,0)
+#cmpif 0x04 :   rc = BleCharCommit(shBat,batlvl$,chBatlvl)
+#cmpif 0x04 :   AssertRC(rc, 768)
 
 endfunc rc
 
 //==============================================================================
 //==============================================================================
-function RegBatService(byval btlvl as integer,  byval fNfy as integer) as integer
+function RegBatService(byval btlvl as integer, byval fNfy as integer) as integer
     dim rc
 
                 //Create a battery PRIMARY service attribute which has a uuid of 0x180F
-#cmpif 0x04 :   rc = BleServiceNew(BLE_SERVICE_PRIMARY, BleHandleUuid16(0x180F), shBat)
-#cmpif 0x04 :   AssertRC(rc,  779)
+#cmpif 0x04 :   rc = BleServiceNew(BLE_SERVICE_PRIMARY,BleHandleUuid16(0x180F),shBat)
+#cmpif 0x04 :   AssertRC(rc, 779)
 
                 //Create the Battery Level Characteristic which has a UUID of 0x2A19
-#cmpif 0x04 :   rc = AddCharBatLevel(btlvl, fNfy)
-#cmpif 0x04 :   AssertRC(rc,  783)
+#cmpif 0x04 :   rc = AddCharBatLevel(btlvl,fNfy)
+#cmpif 0x04 :   AssertRC(rc, 783)
 
                 //Commit battery service to GATT table
 #cmpif 0x04 :   rc=BleServiceCommit(shBat)
-#cmpif 0x04 :   AssertRC(rc,  787)
+#cmpif 0x04 :   AssertRC(rc, 787)
 
 endfunc rc
 
 
 //==============================================================================
 //==============================================================================
-sub InitBatService(byval batlvl as integer,  byval fNfy as integer)
+sub InitBatService(byval batlvl as integer, byval fNfy as integer)
 #cmpif 0x04 :   dim rc
 
-#cmpif 0x04 :   rc = RegBatService(batlvl, fNfy)
+#cmpif 0x04 :   rc = RegBatService(batlvl,fNfy)
 #cmpif 0x04 :   if rc==0 then
 #cmpif 0x04 :      AddUuid(UUID_BATTERY_SERVICE)
 #cmpif 0x04 :   endif
@@ -848,9 +820,9 @@ function SetBattLevel(btLvl as integer) as integer
 
 #cmpif 0x04 :   btLvl = VerifyBattLevel(btLvl)
 
-#cmpif 0x04 :   rc = BleEncode8(batlvl$, btlvl, 0)
-#cmpif 0x04 :   rc = BleCharValueWrite(chBatlvl, batlvl$)
-#cmpif 0x04 :   AssertRC(rc,  825)
+#cmpif 0x04 :   rc = BleEncode8(batlvl$,btlvl,0)
+#cmpif 0x04 :   rc = BleCharValueWrite(chBatlvl,batlvl$)
+#cmpif 0x04 :   AssertRC(rc, 825)
 
 endfunc rc
 
@@ -862,14 +834,14 @@ function NotifyBattLevel(btLvl as integer) as integer
 
 #cmpif 0x04 :   btLvl = VerifyBattLevel(btLvl)
 
-#cmpif 0x04 :   rc = BleEncode8(batlvl$, btlvl, 0)
-#cmpif 0x04 :   rc = BleCharValueNotify(chBatlvl, batlvl$)
-#cmpif 0x04 :   AssertRC(rc,  839)
+#cmpif 0x04 :   rc = BleEncode8(batlvl$,btlvl,0)
+#cmpif 0x04 :   rc = BleCharValueNotify(chBatlvl,batlvl$)
+#cmpif 0x04 :   AssertRC(rc, 839)
 
 endfunc rc
 
 //==============================================================================
-// Data to encode is in hrtRate, sensCntct, hRing
+// Data to encode is in hrtRate,sensCntct,hRing
 //==============================================================================
 sub HrsEncode()
   dim rc
@@ -882,7 +854,7 @@ sub HrsEncode()
   //Initialise the flags byte
   flgs = 0
   //Get number of items in the RR buffer
-  rc = CircBufItems(hRing, itms)
+  rc = CircBufItems(hRing,itms)
 
   if hrtRate < 256 then
     //Only one byte to encode
@@ -907,21 +879,21 @@ sub HrsEncode()
   endif
 
   //Create the attribute buffer space
-  rc= StrFill(hrs$, 0, encsz)
+  rc= StrFill(hrs$,0,encsz)
   //Save the flags field
-  rc = BleEncode8(hrs$, flgs, 0)
+  rc = BleEncode8(hrs$,flgs,0)
   //Save the heart rate info
   if hrtRate < 256 then
-    rc = BleEncode8(hrs$, hrtRate, 1)
+    rc = BleEncode8(hrs$,hrtRate,1)
     ndx = 2
   else
-    rc = BleEncode16(hrs$, hrtRate, 1)
+    rc = BleEncode16(hrs$,hrtRate,1)
     ndx = 3
   endif
   //Save the rrInfo if there is any
   while (itms)
-    rc = CircBufRead(hRing, rr)
-    rc = BleEncode16(hrs$, rr, ndx)
+    rc = CircBufRead(hRing,rr)
+    rc = BleEncode16(hrs$,rr,ndx)
     ndx = ndx + 2
     itms = itms - 1
   endwhile
@@ -945,32 +917,30 @@ function AddCharHrsMeas() as integer
   //Create the metadata for the value attribute in the characteristic
   //Heart Rate attribute has variable length
   //++++
-  mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_NONE, BLE_ATTR_ACCESS_NONE, MAX_HRM_LEN, 1, rc)
-  AssertRC(rc,  921)
+  mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_NONE,BLE_ATTR_ACCESS_NONE,MAX_HRM_LEN,1,rc)
+  AssertRC(rc, 921)
   //There is a CCCD in this characteristic
-  mdCccd=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN, BLE_ATTR_ACCESS_OPEN, 2, 0, rc)
-  AssertRC(rc,  924)
+  mdCccd=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN,BLE_ATTR_ACCESS_OPEN,2,0,rc)
+  AssertRC(rc, 924)
   //There is no SCCD in this characteristic
   mdSccd = BLE_CHAR_METADATA_ATTR_NOT_PRESENT
-  //AssertRC(rc,  927)
+  //AssertRC(rc, 927)
   //Create the Characteristic object
-  // chProp = BLE_CHAR_PROPERTIES_NOTIFY | BLE_CHAR_PROPERTIES_WRITE
   chProp = BLE_CHAR_PROPERTIES_NOTIFY
-  rc = BleCharNew(chProp, BleHandleUuid16(0x2A37), mdAttr, mdCccd, mdSccd)
-  AssertRC(rc,  931)
+  rc = BleCharNew(chProp,BleHandleUuid16(0x2A37),mdAttr,mdCccd,mdSccd)
+  AssertRC(rc, 931)
 
   //++++
   //Commit the characteristic
   //++++
   HrsEncode()
-  rc = BleCharCommit(shHrs, hrs$, chHrsMeas)
-  AssertRC(rc,  938)
+  rc = BleCharCommit(shHrs,hrs$,chHrsMeas)
+  AssertRC(rc, 938)
 
 endfunc rc
 
 
 //==============================================================================
-// Heart Sensor Location Characteristic
 //==============================================================================
 function AddCharHrsSensLoc() as integer
   dim rc
@@ -986,52 +956,50 @@ function AddCharHrsSensLoc() as integer
   //Create the metadata for the value attribute in the characteristic
   //Heart Rate attribute has variable length
   //++++
-  mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN, BLE_ATTR_ACCESS_NONE, 1, 0, rc)
-  AssertRC(rc,  960)
+  mdAttr=BleAttrMetadata(BLE_ATTR_ACCESS_OPEN,BLE_ATTR_ACCESS_NONE,1,0,rc)
+  AssertRC(rc, 960)
   //There is a CCCD in this characteristic
   mdCccd=BLE_CHAR_METADATA_ATTR_NOT_PRESENT
-  //AssertRC(rc,  963)
+  //AssertRC(rc, 963)
   //There is no SCCD in this characteristic
   mdSccd = BLE_CHAR_METADATA_ATTR_NOT_PRESENT
-
-  //AssertRC(rc,  966)
+  //AssertRC(rc, 966)
   //Create the Characteristic object
-  // NOTE: this is where the char should be "write",  right?
   chProp = BLE_CHAR_PROPERTIES_READ
-  rc = BleCharNew(chProp,  UUID_CHAR,  mdAttr, mdCccd, mdSccd)
-  AssertRC(rc,  970)
+  rc = BleCharNew(chProp,BleHandleUuid16(0x2A38),mdAttr,mdCccd,mdSccd)
+  AssertRC(rc, 970)
 
   //++++
   //Commit the characteristic
   //++++
   attr$ ="\00"
-  rc = BleEncode8(attr$, sensLoc, 0)
-  rc = BleCharCommit(shHrs, attr$, chHrsLoc)
-  AssertRC(rc,  978)
+  rc = BleEncode8(attr$,sensLoc,0)
+  rc = BleCharCommit(shHrs,attr$,chHrsLoc)
+  AssertRC(rc, 978)
 
 endfunc rc
 
+
 //==============================================================================
-// Heart Service
 //==============================================================================
 function RegHrsService() as integer
   dim rc
 
   //Create a Heart Rate PRIMARY service attribure which has a uuid of 0x180D
-  rc = BleServiceNew(BLE_SERVICE_PRIMARY,  UUID_SERVICE,  shHrs)
-  AssertRC(rc,  990)
+  rc = BleServiceNew(BLE_SERVICE_PRIMARY,BleHandleUuid16(0x180D),shHrs)
+  AssertRC(rc, 990)
 
   //Create the Heart Rate Measurement Characteristic which has a UUID of 0x2A37
   rc = AddCharHrsMeas()
-  AssertRC(rc,  994)
+  AssertRC(rc, 994)
 
-  //Create the READ characteristic
+  //Create the XXXX Characteristic which has a UUID of YYYYYY
   rc = AddCharHrsSensLoc()
-  AssertRC(rc,  998)
+  AssertRC(rc, 998)
   
   //Commit Heart Rate service to GATT table
   rc=BleServiceCommit(shHrs)
-  AssertRC(rc,  1002)
+  AssertRC(rc, 1002)
 
 endfunc rc
 
@@ -1050,14 +1018,13 @@ sub InitHrsService()
   dim rc
 
   //Create ring buffer for the RR data store
-  rc = CircBufCreate(RR_RING_BUFFER_SIZE,  hRing)
-  AssertRC(rc,  1022)
+  rc = CircBufCreate(RR_RING_BUFFER_SIZE, hRing)
+  AssertRC(rc, 1022)
 
   rc = RegHrsService()
-  AssertRC(rc,  1025)
+  AssertRC(rc, 1025)
   if rc==0 then
-    DbgMsg("Adding advertisement for service")
-    AddUuid(UUID_SERVICE)
+     AddUuid(UUID_HEART_RATE_SERVICE)
   endif
 
 endsub
@@ -1067,11 +1034,11 @@ endsub
 //==============================================================================
 function SendHrData() as integer
   dim rc
-  //rc = BleSvcSetHeartRate(hrtRate, sensCntct)
+  //rc = BleSvcSetHeartRate(hrtRate,sensCntct)
   HrsEncode()
 //print "\nhrs_attr=";strhexize$(hrs$);"\n"
-  rc = BleCharValueNotify(chHrsMeas, hrs$)
-  AssertRC(rc,  1041)
+  rc = BleCharValueNotify(chHrsMeas,hrs$)
+  AssertRC(rc, 1041)
 endfunc rc
 
 
@@ -1080,16 +1047,16 @@ endfunc rc
 function AddRrData(rrInt as integer) as integer
   dim rc
   if (rrInt>=0)&&(rrInt<=65535) then
-    rc=CircBufOverWrite(hRing, rrInt)
+    rc=CircBufOverWrite(hRing,rrInt)
     if rc==0x5103 then
-      //The buffer was full,  so change value that regression test is expecting
+      //The buffer was full, so change value that regression test is expecting
       // **** customer is not expected to do this
       rc=0x6029
     endif
   else
     rc = 0x6025
   endif
-  AssertRC(rc,  1059)
+  AssertRC(rc, 1059)
 endfunc rc
 
 
@@ -1100,7 +1067,7 @@ endfunc rc
 //==============================================================================
 // MUST be called from the BLE message handler
 //==============================================================================
-sub HrsOnBleMsg(BYVAL nMsgId AS INTEGER,  BYVAL nCtx AS INTEGER)
+sub HrsOnBleMsg(BYVAL nMsgId AS INTEGER, BYVAL nCtx AS INTEGER)
   //dim rc
   //select nMsgId
   //case else
@@ -1131,14 +1098,14 @@ endsub
 //==============================================================================
 sub OnStartup()
 
-  InitSecurityMngr(PAIRING_IOCAPABILITY, MIN_LTK_SIZE, MAX_LTK_SIZE)
+  InitSecurityMngr(PAIRING_IOCAPABILITY,MIN_LTK_SIZE, MAX_LTK_SIZE)
 
   //Initialise services
   InitGapService()
-  // InitDisService()
+  InitDisService()
 
   InitHrsService()
-  // InitBatService(BATT_INIT_LEVEL_PERC, BATT_NOTIFY)  //2nd parameter will be allowed to be 1 in future
+  InitBatService(BATT_INIT_LEVEL_PERC,BATT_NOTIFY)  //2nd parameter will be allowed to be 1 in future
 
   //Initiliase advert and scan reports
   InitAdvReports(advFlags)
@@ -1170,7 +1137,7 @@ function StartAds(adv as integer) as integer
   dim rc
   rc=StartAdverts(adv)
   if rc==0 then
-    DbgMsgVal("Start Adverts", adv)
+    DbgMsgVal("Start Adverts",adv)
   endif
 endfunc rc
 
@@ -1188,32 +1155,32 @@ endfunc rc
 //==============================================================================
 sub SetTxPower(txp as integer)
   dim rc
-  DbgMsgVal("Set TxPower = ", txp)
+  DbgMsgVal("Set TxPower = ",txp)
   rc=BleTxPowerSet(txp)
-  AssertRC(rc,  1160)
+  AssertRC(rc, 1160)
 endsub
 
 //==============================================================================
 //==============================================================================
 sub ShowConnParms(nCtx as integer)
   dim rc
-  dim intrvl, sprvto, slat
-  rc= BleGetCurConnParms(nCtx, intrvl, sprvto, slat)
-  AssertRC(rc,  1169)
+  dim intrvl,sprvto,slat
+  rc= BleGetCurConnParms(nCtx,intrvl,sprvto,slat)
+  AssertRC(rc, 1169)
   if rc==0 then
-    DbgMsgVal("Conn Interval", intrvl)
-    DbgMsgVal("Conn Supervision Timeout", sprvto)
-    DbgMsgVal("Conn Slave Latency", slat)
+    DbgMsgVal("Conn Interval",intrvl)
+    DbgMsgVal("Conn Supervision Timeout",sprvto)
+    DbgMsgVal("Conn Slave Latency",slat)
   endif
 endsub
 
 
 //==============================================================================
 //==============================================================================
-sub SetDeviceName(st$ as string, wr as integer)
+sub SetDeviceName(st$ as string,wr as integer)
   dim rc
-  rc = BleGapSvcInit(st$, wr, APPEARANCE, MIN_CONN_INTERVAL, MAX_CONN_INTERVAL, CONN_SUP_TIMEOUT, SLAVE_LATENCY)
-  AssertRC(rc,  1183)
+  rc = BleGapSvcInit(st$,wr,APPEARANCE,MIN_CONN_INTERVAL,MAX_CONN_INTERVAL,CONN_SUP_TIMEOUT,SLAVE_LATENCY)
+  AssertRC(rc, 1183)
   InitAdvReports(advFlags)
 endsub
 
@@ -1229,7 +1196,7 @@ endsub
 //==============================================================================
 // Expecting to see XX=nnn\n\r  where nnn =1 to 2 digit decimal number
 //==============================================================================
-function OnUartCmd(stData$, datalen) as integer
+function OnUartCmd(stData$,datalen) as integer
   dim rc
   dim stRS$
   dim vl$
@@ -1240,66 +1207,66 @@ function OnUartCmd(stData$, datalen) as integer
 
     //Drop the terminating CR
     datalen = datalen - 1
-    stData$ = left$(stData$, datalen)
+    stData$ = left$(stData$,datalen)
 
-    stRS$ = strsplitleft$(stData$, 3)
-    if     strcmp(stRS$, "hr ")==0 then   //Heart rate in beats per minute
+    stRS$ = strsplitleft$(stData$,3)
+    if     strcmp(stRS$,"hr ")==0 then   //Heart rate in beats per minute
       hrtRate = strvaldec(stData$)
 
-    elseif  strcmp(stRS$, "rr ")==0 then  //rr interval add
+    elseif  strcmp(stRS$,"rr ")==0 then  //rr interval add
       vl = strvaldec(stData$)
       rc = AddRrData(vl)
       if rc != 0 then
         rsp = 1
       endif
 
-#cmpif 0x04 :     elseif strcmp(stRS$, "bl ")==0 then
+#cmpif 0x04 :     elseif strcmp(stRS$,"bl ")==0 then
 #cmpif 0x04 :       rc =SetBattLevel(strvaldec(stData$))
 
-    elseif strcmp(stRS$, "db ")==0 then
+    elseif strcmp(stRS$,"db ")==0 then
       DbgInfo(strvaldec(stData$))
 
-    elseif strcmp(stRS$, "tp ")==0 then
+    elseif strcmp(stRS$,"tp ")==0 then
       SetTxPower(strvaldec(stData$))
 
-    elseif strcmp(stRS$, "dc ")==0 then
+    elseif strcmp(stRS$,"dc ")==0 then
       BleConfigDcDc(strvaldec(stData$))
 
-    elseif strcmp(stRS$, "sc ")==0 then
+    elseif strcmp(stRS$,"sc ")==0 then
       sensCntct = strvaldec(stData$)
 
-    elseif strcmp(stRS$, "dr ")==0 then
-      SetDeviceName(stData$, 0)
+    elseif strcmp(stRS$,"dr ")==0 then
+      SetDeviceName(stData$,0)
 
-    elseif strcmp(stRS$, "dw ")==0 then
-      SetDeviceName(stData$, 1)
+    elseif strcmp(stRS$,"dw ")==0 then
+      SetDeviceName(stData$,1)
 
-    elseif strcmp(stRS$, "dev")==0 then   //Get and print the device name
+    elseif strcmp(stRS$,"dev")==0 then   //Get and print the device name
       GetDeviceName()
 
-    elseif strcmp(stRS$, "dis")==0 then   //Disconnect
+    elseif strcmp(stRS$,"dis")==0 then   //Disconnect
       if Disconnect(hConn) != 0 then
         rsp = 1
       endif
 
-    elseif strcmp(stRS$, "ky ")==0 then
+    elseif strcmp(stRS$,"ky ")==0 then
       vl = strvaldec(stData$)
-      rc = SecSendPassKey(hConn, vl)
+      rc = SecSendPassKey(hConn,vl)
 
-    elseif  strcmp(stRS$, "ai ")==0 then  //Advertising interval in milliseconds
+    elseif  strcmp(stRS$,"ai ")==0 then  //Advertising interval in milliseconds
       if SetAdvertInt(strvaldec(stData$)) == 0 then
         rsp = 1
       endif
 
-    elseif  strcmp(stRS$, "at ")==0 then  //Advertising timeout in milliseconds
+    elseif  strcmp(stRS$,"at ")==0 then  //Advertising timeout in milliseconds
       if SetAdvertTout(strvaldec(stData$)) == 0 then
         rsp = 1
       endif
 
-    elseif strcmp(stRS$, "fg ")==0 then   //Flags AD value (0..3) see BLE_DISCOVERABILITY_xxx
+    elseif strcmp(stRS$,"fg ")==0 then   //Flags AD value (0..3) see BLE_DISCOVERABILITY_xxx
       advFlags = strvaldec(stData$)
 
-    elseif strcmp(stRS$, "ad ")==0 then
+    elseif strcmp(stRS$,"ad ")==0 then
       vl = strvaldec(stData$)
       if vl==0 then
         rc= StopAds()
@@ -1311,7 +1278,7 @@ function OnUartCmd(stData$, datalen) as integer
         rsp = 1
       endif
 
-    elseif strcmp(stRS$, "ma ")==0 then
+    elseif strcmp(stRS$,"ma ")==0 then
       vl$ = strdehexize$(stData$)
       vl=strlen(vl$)
       if vl!=7 then
@@ -1320,36 +1287,36 @@ function OnUartCmd(stData$, datalen) as integer
         addr$ = vl$
       endif
 
-    elseif strcmp(stRS$, "sen")==0 then
+    elseif strcmp(stRS$,"sen")==0 then
       if SendHrData() != 0 then
         rsp = 1
       endif
 
-    elseif strcmp(stRS$, "txp")==0 then
-      DbgMsgVal("Current Tx Power = ", sysinfo(2008))
+    elseif strcmp(stRS$,"txp")==0 then
+      DbgMsgVal("Current Tx Power = ",sysinfo(2008))
 
-    elseif strcmp(stRS$, "qui")==0 then
+    elseif strcmp(stRS$,"qui")==0 then
       reset(0)
       exitfunc 0
 
-    elseif strcmp(stRS$, "sto")==0 then
+    elseif strcmp(stRS$,"sto")==0 then
       stop
 
-    elseif  strcmp(stRS$, "in ")==0 then  //Minimum interval (us) for conn parameters
+    elseif  strcmp(stRS$,"in ")==0 then  //Minimum interval (us) for conn parameters
       minint = strvaldec(stData$)
 
-    elseif  strcmp(stRS$, "ix ")==0 then  //Maximum interval (us) for conn parameters
+    elseif  strcmp(stRS$,"ix ")==0 then  //Maximum interval (us) for conn parameters
       maxint = strvaldec(stData$)
 
-    elseif  strcmp(stRS$, "st ")==0 then  //Supervision teimout (us) for conn parameters
+    elseif  strcmp(stRS$,"st ")==0 then  //Supervision teimout (us) for conn parameters
       sprtout = strvaldec(stData$)
 
-    elseif  strcmp(stRS$, "sl ")==0 then  //Slave latency for conn parameters
+    elseif  strcmp(stRS$,"sl ")==0 then  //Slave latency for conn parameters
       slatncy = strvaldec(stData$)
 
-    elseif strcmp(stRS$, "neg")==0 then
+    elseif strcmp(stRS$,"neg")==0 then
       rc = ConnNewParms(hConn)
-      AssertRC(rc,  1319)
+      AssertRC(rc, 1319)
       if rc != 0 then
         rsp = 1
       endif
@@ -1376,31 +1343,31 @@ endfunc 1
 //==============================================================================
 // This handler is called when there is a BLE message
 //==============================================================================
-function HandlerBleMsg(BYVAL nMsgId AS INTEGER,  BYVAL nCtx AS INTEGER) as integer
+function HandlerBleMsg(BYVAL nMsgId AS INTEGER, BYVAL nCtx AS INTEGER) as integer
 
   //Inform libraries
-  ConnMngrOnBleMsg(nMsgId, nCtx)
-  AdvMngrOnBleMsg(nMsgId, nCtx)
+  ConnMngrOnBleMsg(nMsgId,nCtx)
+  AdvMngrOnBleMsg(nMsgId,nCtx)
 
   //Let the library deal with it first
-  HrsOnBleMsg(nMsgId, nCtx)
+  HrsOnBleMsg(nMsgId,nCtx)
 
   select nMsgId
   case BLE_EVBLEMSGID_CONNECT
-    DbgMsgVal(" --- Connect : ", nCtx)
+    DbgMsgVal(" --- Connect : ",nCtx)
      ShowConnParms(nCtx)
 
   case BLE_EVBLEMSGID_DISCONNECT
-    DbgMsgVal(" --- Disconnect : ", nCtx)
+    DbgMsgVal(" --- Disconnect : ",nCtx)
 
   //case BLE_EVBLEMSGID_HRS_NOTIFICATION_STATE
-  //  DbgMsgVal(" --- Hrs Notification : ", nCtx)
+  //  DbgMsgVal(" --- Hrs Notification : ",nCtx)
 
   case BLE_EVBLEMSGID_DEVICENAME_WRITE
     DbgMsg(" --- DevName Write : ")
 
   case BLE_EVBLEMSGID_DISPLAY_PASSKEY
-    DbgMsgVal("Display Pairing Passkey ", nCtx)
+    DbgMsgVal("Display Pairing Passkey ",nCtx)
 
   case BLE_EVBLEMSGID_NEW_BOND
     DbgMsg(" +++ New Bond")
@@ -1412,10 +1379,10 @@ function HandlerBleMsg(BYVAL nMsgId AS INTEGER,  BYVAL nCtx AS INTEGER) as integ
     DbgMsg(" +++ Encrypted Connection")
 
   case BLE_EVBLEMSGID_CONN_TO_BONDED_MASTER
-    DbgMsgVal(" -- Conn to Bonded Master ", nCtx)
+    DbgMsgVal(" -- Conn to Bonded Master ",nCtx)
 
   case BLE_EVBLEMSGID_AUTH_KEY_REQUEST
-    DbgMsgVal(" +++ Auth Key Request,  type=", nCtx)
+    DbgMsgVal(" +++ Auth Key Request, type=",nCtx)
 
   case BLE_EVBLEMSGID_CONN_PARMS_UPDATE
      ShowConnParms(nCtx)
@@ -1424,18 +1391,18 @@ function HandlerBleMsg(BYVAL nMsgId AS INTEGER,  BYVAL nCtx AS INTEGER) as integ
     DbgMsg(" ??? Conn Parm Negotiation FAILED")
 
   case else
-    DbgMsgVal("Unknown Ble Msg ", nMsgId)
+    DbgMsgVal("Unknown Ble Msg ",nMsgId)
   endselect
 endfunc 1
 
 //==============================================================================
 // This handler is called when there is a CHARCCCD message
 //==============================================================================
-function HandlerCharCccd(BYVAL hChar AS INTEGER,  BYVAL nVal AS INTEGER) as integer
+function HandlerCharCccd(BYVAL hChar AS INTEGER, BYVAL nVal AS INTEGER) as integer
   if hChar == chHrsMeas then
-    DbgMsgVal(" --- Hrs Notification : ", nVal)
+    DbgMsgVal(" --- Hrs Notification : ",nVal)
   else
-    DbgMsgVal(" --- New CCCD : ", nVal)
+    DbgMsgVal(" --- New CCCD : ",nVal)
   endif
 endfunc 1
 
@@ -1446,10 +1413,10 @@ function HandlerUartRx() as integer
   dim nMatch
   dim stData$
 
-  nMatch=UartReadMatch(stRsp$, 13)
+  nMatch=UartReadMatch(stRsp$,13)
   if nMatch!=0 then
-    stData$ = strsplitleft$(stRsp$, nMatch)
-    exitfunc OnUartCmd(stData$, nMatch)
+    stData$ = strsplitleft$(stRsp$,nMatch)
+    exitfunc OnUartCmd(stData$,nMatch)
   endif
 endfunc 1
 
@@ -1467,7 +1434,7 @@ function HandlerBlrAdvTimOut() as integer
     //  Switch off the system - requires a power cycle to recover
     //------------------------------------------------------------
     //  rc = SystemStateSet(0)
-    //  AssertRC(rc,  1437)
+    //  AssertRC(rc, 1437)
   endif
 
 endfunc 1
@@ -1499,7 +1466,7 @@ if (AUTO_STARTUP & 2) != 0 then
 endif
 
 //Send user prompt for uart based command interface
-msg$="LHR BLE Command Peripheral\n\r"
+msg$="\n\r"
 UartMsg(msg$)
 msg$=DEVICENAME
 UartMsg(msg$)
