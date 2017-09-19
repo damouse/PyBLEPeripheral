@@ -746,25 +746,28 @@ sub HrsEncode()
   //Create the attribute buffer space
   rc= StrFill(hrs$, 0, encsz)
 
+  rc = BleEncode8(hrs$, 0x00, 0)
+  rc = BleEncode8(hrs$, 0x11, 1)
+
   //Save the flags field
-  rc = BleEncode8(hrs$, flgs, 0)
+  // rc = BleEncode8(hrs$, flgs, 0)
 
   //Save the heart rate info
-  if hrtRate < 256 then
-    rc = BleEncode8(hrs$, hrtRate, 1)
-    ndx = 2
-  else
-    rc = BleEncode16(hrs$, hrtRate, 1)
-    ndx = 3
-  endif
+  // if hrtRate < 256 then
+    // rc = BleEncode8(hrs$, hrtRate, 1)
+    // ndx = 2
+  // else
+    // rc = BleEncode16(hrs$, hrtRate, 1)
+    // ndx = 3
+  // endif
 
   //Save the rrInfo if there is any
-  while (itms)
-    rc = CircBufRead(hRing, rr)
-    rc = BleEncode16(hrs$, rr, ndx)
-    ndx = ndx + 2
-    itms = itms - 1
-  endwhile
+  // while (itms)
+  //   rc = CircBufRead(hRing, rr)
+  //   rc = BleEncode16(hrs$, rr, ndx)
+  //   ndx = ndx + 2
+  //   itms = itms - 1
+  // endwhile
 endsub
 
 //==============================================================================
@@ -879,9 +882,8 @@ endsub
 //==============================================================================
 function SendHrData() as integer
   dim rc
-  //rc = BleSvcSetHeartRate(hrtRate, sensCntct)
   HrsEncode()
-//print "\nhrs_attr=";strhexize$(hrs$);"\n"
+  print "\nhrs_attr=";strhexize$(hrs$);"\n"
   rc = BleCharValueNotify(chHrsMeas, hrs$)
   AssertRC(rc,  1041)
 endfunc rc
