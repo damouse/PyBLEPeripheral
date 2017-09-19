@@ -14,7 +14,6 @@ import serial
 import threading
 
 # Constant
-s
 SERIAL_PORT = '/dev/ttyAMA0'
 SERIAL_BAUDRATE = 115200
 SERIAL_TIMEOUT = 0.1
@@ -27,7 +26,7 @@ class SerialConnection(object):
     '''
 
     def __init__(self, port):
-        super(SerialConneciton, self).__init__()
+        super(SerialConnection, self).__init__()
         self._serial = serial.Serial(port=port,
                                      baudrate=SERIAL_BAUDRATE,
                                      timeout=SERIAL_TIMEOUT,
@@ -58,15 +57,15 @@ def main():
 
     while True:
         while conn.waiting:
+            print("Waiting...")
             x = conn.read()
             x = x.decode()
-            print (x)
+            print(x)
 
         if first:
+            print("First....")
             conn.write("txpower\r")
             first = False
-
-    ser.close()
 
 
 if __name__ == '__main__':
