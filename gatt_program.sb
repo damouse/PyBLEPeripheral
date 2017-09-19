@@ -67,7 +67,6 @@
 dim readBuffer$
 
 #set $cmpif,  0x0 //Disable battery service
-//#set $cmpif,  0x4 //Enable battery service
 
 //This defines how the application startsup and is a bit mask.
 //Bit 0 == 1 then OnStartup() is called just before waitevent
@@ -130,9 +129,8 @@ dim readBuffer$
 #define NEXT_CONN_PARAMS_UPDATE_DELAY     5000
 #define MAX_CONN_PARAMS_UPDATE_DELAY      15000
 
-//
 #define RR_RING_BUFFER_SIZE                9
-#define MAX_HRM_LEN                        20
+#define MAX_HRM_LEN                        40
 
 
 #define BLE_CONN_HANDLE_INVALID                           0xFFFF
@@ -1077,9 +1075,9 @@ function OnUartCmd(stData$, datalen) as integer
 
     stRS$ = strsplitleft$(stData$, 3)
 
-    DbgMsg(stData$)
-    DbgMsg(strdehexize$(stData$))
-    DbgMsg(stRS$)
+    // DbgMsg(stData$)
+    // DbgMsg(strdehexize$(stData$))
+    // DbgMsg(stRS$)
 
     if strcmp(stRS$, "hr ")==0 then   //Heart rate in beats per minute
       hrtRate = strvaldec(stData$)
@@ -1092,10 +1090,10 @@ function OnUartCmd(stData$, datalen) as integer
       endif
 
     elseif strcmp(stRS$, "se ") == 0 then
-      DbgMsg("Sending to Peer")
+      // DbgMsg("Sending to Peer")
       rc = SendData(stData$)
       AssertRC(rc, 1096)
-      DbgMsgVal("After dehexing: ", strvaldec(stData$))
+      // DbgMsgVal("After dehexing: ", strvaldec(stData$))
 
     elseif strcmp(stRS$, "qq ") == 0 then
       DbgMsg(readBuffer$)
@@ -1366,8 +1364,6 @@ msg$="LHR BLE Command Peripheral\n\r"
 UartMsg(msg$)
 msg$=DEVICENAME
 UartMsg(msg$)
-//msg$="\n\r"
-//UartMsg(msg$)
 
 //Send an OK response
 UartRsp(0)
