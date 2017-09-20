@@ -1208,7 +1208,8 @@ endfunc 1
 function HandlerBlrAdvTimOut() as integer
   if AdvMngrOnAdvTimeOut() == 0 then
     DbgMsg( "\nAdvert stopped via timeout" )
-    StartAds(1)
+    dim rc
+    rc = StartAds(1)
   endif
 endfunc 1
 
