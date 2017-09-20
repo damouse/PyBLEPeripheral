@@ -65,7 +65,7 @@ class SerialConnection(object):
         assert(len(msg) <= MAX_OUT_LEN)
         msg = b'se ' + msg + b'\r'
         self._serial.write(msg)
-        print("writing: " + msg)
+        print("writing: " + str(msg))
 
     def spinwait(self):
         ''' Spins on the inbound queue, returning messages as they arrive '''
