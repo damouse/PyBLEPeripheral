@@ -63,7 +63,7 @@ class SerialConnection(object):
     def write(self, msg):
         ''' Write bytes to the serial connection, adding a carriage return'''
         assert(len(msg) <= MAX_OUT_LEN)
-        msg = 'se ' + msg.hex() + '\r'
+        msg = 'se ' + str(msg.hex()) + '\r'
         self._serial.write(msg)
         print("writing: " + msg)
 
