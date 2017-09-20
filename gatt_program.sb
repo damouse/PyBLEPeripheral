@@ -895,7 +895,7 @@ endfunc rc
 //==============================================================================
 function SendData(byref msg$ as string) as integer
   dim rc
-  msg$ = strdehexize$(msg$)
+  // msg$ = strdehexize$(msg$)
   rc = BleCharValueNotify(chHrsMeas, msg$)
   AssertRC(rc,  906)
 endfunc rc
