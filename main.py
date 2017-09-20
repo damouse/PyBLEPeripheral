@@ -71,7 +71,7 @@ class SerialConnection(object):
         ''' Spins on the inbound queue, returning messages as they arrive '''
         while self.is_open:
             msg = self.queue.get()
-            print("Have message: ", msg)
+            print(msg)
 
     def _read(self):
         ''' Starts the internal read loop '''
@@ -79,7 +79,6 @@ class SerialConnection(object):
             while self._serial.in_waiting:
                 x = self._serial.readline()
                 x = x.decode()
-                print(x)
                 self.queue.put(x)
 
 
@@ -113,8 +112,8 @@ class Coder(object):
 
         See link of struct packing types here: https://docs.python.org/3/library/struct.html
         '''
-
-        data = b'\n' + message.encode() + b'\t'
+        message = '\n' + message + '\t'
+        data = message.encode()
         ret = []
 
         # Number of packets based on the size of packets
@@ -156,12 +155,12 @@ def startCoderTests():
     res = c.marshall("Hello, World! My name is joe, and I like coffee a lott.")
 
     for x in res:
-        print("Len: {} As bytes: {}".format(len(x), x))
+        print("Len: {} As hex: {}".format(len(x), x.hex()))
 
 
 if __name__ == '__main__':
-    startSerialConnection()
-    # startCoderTests()
+    # startSerialConnection()
+    startCoderTests()
 
 
 
