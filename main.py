@@ -63,7 +63,7 @@ class SerialConnection(object):
     def write(self, msg):
         ''' Write bytes to the serial connection, adding a carriage return'''
         assert(len(msg) <= MAX_OUT_LEN)
-        self._serial.write(msg + b'\r')
+        self._serial.write(b'se ' + msg + b'\r')
 
     def spinwait(self):
         ''' Spins on the inbound queue, returning messages as they arrive '''
