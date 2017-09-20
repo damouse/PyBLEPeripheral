@@ -29,7 +29,7 @@ SERIAL_TIMEOUT = 0.1
 SERIAL_RTSCTS = 1
 
 # Number of bytes that can be transmitted using Notify messages at one time
-MAX_OUT_LEN = 20
+MAX_OUT_LEN = 40
 
 
 class SerialConnection(object):
@@ -63,8 +63,8 @@ class SerialConnection(object):
     def write(self, msg):
         ''' Write bytes to the serial connection, adding a carriage return'''
         assert(len(msg) <= MAX_OUT_LEN)
-        msg = b'se ' + msg + b'\r'
-        self._serial.write(msg)
+        msg = 'se ' + msg + '\r'
+        self._serial.write(msg.encode())
         print("writing: " + str(msg))
 
     def spinwait(self):
@@ -124,9 +124,11 @@ class Coder(object):
         # Structure: first is the size of the message, then the message itself
         data = struct.pack('i' + str(len(byte_msg)) + 's', packets, byte_msg)
 
+        data = data.hex()
+        # print("As Hex: ", data.hex())
+
         # Cut the encoded message into max_len sized slices
         while len(data) > 0:
-            print("Round")
             size = min(MAX_OUT_LEN, len(data))
             ret.append(data[:size])
             data = data[size:]
@@ -161,8 +163,8 @@ def startCoderTests():
 
 
 if __name__ == '__main__':
-    startSerialConnection()
-    # startCoderTests()
+    # startSerialConnection()
+    startCoderTests()
 
 
 
