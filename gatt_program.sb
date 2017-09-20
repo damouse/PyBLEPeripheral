@@ -895,7 +895,7 @@ endfunc rc
 //==============================================================================
 function SendData(byref msg$ as string) as integer
   dim rc
-  // msg$ = strdehexize$(msg$)
+  msg$ = strdehexize$(msg$)
   rc = BleCharValueNotify(chHrsMeas, msg$)
   AssertRC(rc,  906)
 endfunc rc
@@ -1061,7 +1061,7 @@ function OnUartCmd(stData$, datalen) as integer
   dim rsp
   rsp=0  //Assume OK response
 
-  DbgMsgVal("Length of input: ", datalen)
+  // DbgMsgVal("Length of input: ", datalen)
 
   if datalen >= 4 then
 
@@ -1071,9 +1071,9 @@ function OnUartCmd(stData$, datalen) as integer
 
     stRS$ = strsplitleft$(stData$, 3)
 
-    DbgMsg(stData$)
-    DbgMsg(strdehexize$(stData$))
-    DbgMsg(stRS$)
+    // DbgMsg(stData$)
+    // DbgMsg(strdehexize$(stData$))
+    // DbgMsg(stRS$)
 
     if strcmp(stRS$, "se ") == 0 then
       rc = SendData(stData$)
