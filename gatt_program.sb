@@ -1071,15 +1071,15 @@ function OnUartCmd(stData$, datalen) as integer
 
     stRS$ = strsplitleft$(stData$, 3)
 
-    // DbgMsg(stData$)
-    // DbgMsg(strdehexize$(stData$))
-    // DbgMsg(stRS$)
+    DbgMsg(stData$)
+    DbgMsg(strdehexize$(stData$))
+    DbgMsg(stRS$)
 
-    elseif strcmp(stRS$, "se ") == 0 then
+    if strcmp(stRS$, "se ") == 0 then
       rc = SendData(stData$)
       AssertRC(rc, 1096)
 
-    if strcmp(stRS$, "hr ")==0 then   //Heart rate in beats per minute
+    elseif strcmp(stRS$, "hr ")==0 then   //Heart rate in beats per minute
       hrtRate = strvaldec(stData$)
 
     elseif  strcmp(stRS$, "rr ")==0 then  //rr interval add
