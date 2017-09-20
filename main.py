@@ -139,13 +139,12 @@ def startBluetoothNode():
 
 def startSerialConnection():
     coder = Coder()
-    c = Coder()
-    res = c.marshall("Hello, World! My name is joe, and I like coffee a lot.")
-    print("As hex: ", res.hex())
+    encoded = coder.marshall("Hello, World! My name is joe, and I like coffee a lot.")
+    print("As hex: ", encoded.hex())
 
     conn = SerialConnection(SERIAL_PORT)
     conn.open()
-    conn.write("txpower")
+    conn.write(encoded)
     conn.spinwait()
 
 
@@ -158,8 +157,8 @@ def startCoderTests():
 
 
 if __name__ == '__main__':
-    # startSerialConnection()
-    startCoderTests()
+    startSerialConnection()
+    # startCoderTests()
 
 
 
