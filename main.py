@@ -114,7 +114,7 @@ class Coder(object):
         See link of struct packing types here: https://docs.python.org/3/library/struct.html
         '''
 
-        data = b'\n' + message.encode() + b'\r'
+        data = b'\n' + message.encode() + b'\t'
         ret = []
 
         # Number of packets based on the size of packets
@@ -160,8 +160,8 @@ def startCoderTests():
 
 
 if __name__ == '__main__':
-    # startSerialConnection()
-    startCoderTests()
+    startSerialConnection()
+    # startCoderTests()
 
 
 
