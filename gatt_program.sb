@@ -1076,7 +1076,6 @@ function OnUartCmd(stData$, datalen) as integer
     // DbgMsg(stRS$)
 
     elseif strcmp(stRS$, "se ") == 0 then
-      DbgMsg("Sending Message")
       rc = SendData(stData$)
       AssertRC(rc, 1096)
 
