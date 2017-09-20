@@ -49,7 +49,7 @@ class SerialConnection(object):
     def open(self):
         ''' This doesen't open the serial connection, it starts the thread that listens to it '''
         self.is_open = True
-        self.thread = Thread(target=self.read)
+        self.thread = Thread(target=self._read)
         self.thread.start()
 
     def close(self):
@@ -140,11 +140,13 @@ def startBluetoothNode():
 def startSerialConnection():
     coder = Coder()
     encoded = coder.marshall("Hello, World! My name is joe, and I like coffee a lot.")
-    print("As hex: ", encoded.hex())
 
     conn = SerialConnection(SERIAL_PORT)
     conn.open()
-    conn.write(encoded)
+
+    for line in encoded:
+        conn.write(line)
+
     conn.spinwait()
 
 
