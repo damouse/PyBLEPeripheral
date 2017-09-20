@@ -29,7 +29,7 @@ SERIAL_TIMEOUT = 0.1
 SERIAL_RTSCTS = 1
 
 # Number of bytes that can be transmitted using Notify messages at one time
-MAX_OUT_LEN = 40
+MAX_OUT_LEN = 20
 
 
 class SerialConnection(object):
@@ -63,9 +63,9 @@ class SerialConnection(object):
     def write(self, msg):
         ''' Write bytes to the serial connection, adding a carriage return'''
         assert(len(msg) <= MAX_OUT_LEN)
-        msg = 'se ' + msg.hex() + '\r'
-        self._serial.write(msg.encode())
-        print("writing: " + msg)
+        msg = b'se ' + msg + b'\r'
+        self._serial.write(msg)
+        print("writing: " + str(msg))
 
     def spinwait(self):
         ''' Spins on the inbound queue, returning messages as they arrive '''
