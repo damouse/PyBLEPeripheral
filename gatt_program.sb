@@ -52,19 +52,10 @@
 //     dw aaaaaa         - Set device name with read/write capability only
 //     db nn             - Display debug info associated with nn
 //     fg n              - n is 0 to 3 (see BLE_DISCOVERABILITY_xxx )
-//
-//
-// 13 Mar 2013
-//    Created
-//
-//******************************************************************************
 
 //******************************************************************************
 // Definitions
 //******************************************************************************
-
-// Character buffer maxed out at 20 bytes. Incoming messages arrive here
-dim readBuffer$
 
 #set $cmpif,  0x0 //Disable battery service
 
@@ -85,53 +76,49 @@ dim readBuffer$
 #define HWREV                             "HwRev1.0"
 #define SWREV                             "SwRev1.0"
 #define SYSID                             "\01\02\03\04\05\06\07\08"
-//#define SYSID                             "@"
 #define REGLIST                           "\DE\AD\C0\DE"
-//#define REGLIST                           ""
 #define PNPID                             "\01\04\BF\03\20\00\01"
-//#define PNPID                             ""
 #define CHAR_CR                           13
 
-        //Minimum acceptable connection interval (0.5 seconds)
+// Minimum acceptable connection interval (0.5 seconds)
 #define MIN_CONN_INTERVAL                 100000
-        //Maximum acceptable connection interval (1 second).
+// Maximum acceptable connection interval (1 second).
 #define MAX_CONN_INTERVAL                 125000
-        //Slave latency -- number of conn events that can be missed
+// Slave latency -- number of conn events that can be missed
 #define SLAVE_LATENCY                     1
-        //Connection supervisory timeout (4 seconds) - max 32 seconds
+// Connection supervisory timeout (4 seconds) - max 32 seconds
 #define CONN_SUP_TIMEOUT                  4000000
-        //DiscoverableMode,  set to BLE_DISCOVERABILITY_xxx
+// DiscoverableMode,  set to BLE_DISCOVERABILITY_xxx
 #define DISCOVERY_MODE                    BLE_DISCOVERABILITY_GENERAL
 #define MAX_DEVNAME_CHRS                  10
-        //Set Appearance advertise 0 to suppress
+// Set Appearance advertise 0 to suppress
 #define ADV_APPEARANCE                    1
 
 #define ADV_INTERVAL_MS                   100     //Advertise interval
 #define ADV_TIMEOUT_MS                    600000  //Advertise timeout
 
-        //Whitelist Policy in Adverts
+// Whitelist Policy in Adverts
 #define ADV_WHITELIST_FILTER_POLICY       ADV_FILTERPOLICY_ANY
 
-        //Minimum long term key size in octets
+// Minimum long term key size in octets
 #define MIN_LTK_SIZE                      8
-        //Maximum long term key size in octets
+// Maximum long term key size in octets
 #define MAX_LTK_SIZE                      16
 
-        //Set this to non-zero to enable notify on batt service
+// Set this to non-zero to enable notify on batt service
 #define BATT_NOTIFY                       0
 #define BATT_INIT_LEVEL_PERC              100
 
-        //This sets the pairing i/o capability using bonding
+// This sets the pairing i/o capability using bonding
 #define PAIRING_IOCAPABILITY              BLE_IOCAPABILITY_NONE
 
-        //Connection Update Negotiation paramters
+// Connection Update Negotiation paramters
 #define FIRST_CONN_PARAMS_UPDATE_DELAY    5000
 #define NEXT_CONN_PARAMS_UPDATE_DELAY     5000
 #define MAX_CONN_PARAMS_UPDATE_DELAY      15000
 
 #define RR_RING_BUFFER_SIZE                9
 #define MAX_HRM_LEN                        20
-
 
 #define BLE_CONN_HANDLE_INVALID                           0xFFFF
 #define BLE_INVALID_UUID_HANDLE                           0
@@ -271,48 +258,44 @@ endsub
 // Global Variable Declarations
 //******************************************************************************
 
-dim advState                //Will be 0 if not advertising,  1, 2, 3, 4 for the four advert types
-dim advType                 //As per ADV_ in ble.sblib
-dim addr$                   //Peer address for Directed Adverts (MSB first) and exactly 6 bytes long
-dim advInt                  //Adv interval in milliseconds
-dim advTmout                //Adv timeout in milliseconds
-dim advFilPol               //Adv filter policy - see ADV_FILTERPOLICY_xxx in blelib.sblib
-                            // 0 = Any
-                            // 1 = Filter Scan Request
-                            // 2 = Filter Connection Request
-                            // 3 = Both
+dim advState        // Will be 0 if not advertising,  1, 2, 3, 4 for the four advert types
+dim advType         // As per ADV_ in ble.sblib
+dim addr$           // Peer address for Directed Adverts (MSB first) and exactly 6 bytes long
+dim advInt          // Adv interval in milliseconds
+dim advTmout        // Adv timeout in milliseconds
+dim advFilPol       // Adv filter policy - see ADV_FILTERPOLICY_xxx in blelib.sblib
 
-dim adRpt$ as string        //Contains the most recent Advertise report
-dim scRpt$ as string        //Contains the most recent scan report
-dim advUuid[6]              //These are the uuid's that are exposed
-dim advUuidCnt              //Uuid Counts for advert report
+dim adRpt$ as string// Contains the most recent Advertise report
+dim scRpt$ as string// Contains the most recent scan report
+dim advUuid[6]      // These are the uuid's that are exposed
+dim advUuidCnt      // Uuid Counts for advert report
 
-dim minint                  //Minimum interval range is 7500us to 4000000us
-dim maxint                  //Minimum interval range is 7500us to 4000000us
-dim sprtout                 //Link supervision timeout max value 32000000us
-dim slatncy                 //Slave latency 0..N where N*Interval must be less than link
-                            //Supervision timeout
-dim hConn                   //Connection handle
+dim minint          // Minimum interval range is 7500us to 4000000us
+dim maxint          // Minimum interval range is 7500us to 4000000us
+dim sprtout         // Link supervision timeout max value 32000000us
+dim slatncy         // Slave latency 0..N where N*Interval must be less than link
+                    // Supervision timeout
+dim hConn           // Connection handle
 
-dim shHrs as integer        //Service handle
+dim shHrs as integer// Service handle
 dim chHrsMeas as integer    //Heart Rate Measurement Characteristic Handle
 dim chHrsLoc as integer     //Heart Rate Sensor Location Handle
 dim hMyChar as integer      // Writable Char
 dim chInbound as integer
 
-dim hrtRate                 //Heart rate in beats per minute
-dim sensLoc                 //Heart sensor location
-dim sensCntct               //Heart sensor sensor contact status on/off
-dim hrs$ as string          //hrs measurement attribute
-dim hRing                   //Handle for the rr ring buffer
+dim hrtRate         // Heart rate in beats per minute
+dim sensLoc         // Heart sensor location
+dim sensCntct       // Heart sensor sensor contact status on/off
+dim hrs$ as string  // hrs measurement attribute
+dim hRing           // Handle for the rr ring buffer
 
-dim stRsp$ as string        //Uart rx data is stored here
+dim stRsp$ as string// Uart rx data is stored here
 dim ok$, er$
 dim msg$
-dim mnltk                   //Min size of ltk
-dim mxltk                   //Max size of ltk
-dim advFlags                //Value for flags AD
-dim dn$                     //Device name
+dim mnltk           // Min size of ltk
+dim mxltk           // Max size of ltk
+dim advFlags        // Value for flags AD
+dim dn$             // Device name
 
 //The following variables are only enabled if the battery service is enabled.
 #cmpif 0x04 : dim shBat       //Battery level service handle
@@ -322,6 +305,9 @@ dim dn$                     //Device name
 //******************************************************************************
 // Initialisse Global Variable
 //******************************************************************************
+
+// Character buffer maxed out at 20 bytes. Incoming messages arrive here
+dim readBuffer$
 
 advState = 0
 advType  = ADV_IND
@@ -338,6 +324,7 @@ scRpt$=""
 for advUuidCnt=0 to 5
   advUuid[advUuidCnt]=-1
 next
+
 advUuidCnt = 0
 
 hConn   = BLE_CONN_HANDLE_INVALID
@@ -345,7 +332,6 @@ minint  = MIN_CONN_INTERVAL
 maxint  = MAX_CONN_INTERVAL
 sprtout = CONN_SUP_TIMEOUT
 slatncy = SLAVE_LATENCY
-
 
 hrtRate         = 0
 sensLoc         = BLE_HRS_BODY_SENSOR_LOCATION_CHEST
@@ -356,7 +342,7 @@ er$    ="\nERROR\r\n>"
 
 mnltk    = MIN_LTK_SIZE
 mxltk    = MAX_LTK_SIZE
-advFlags = DISCOVERY_MODE                      //Can be changed via 'fg' command
+advFlags = DISCOVERY_MODE              // Can be changed via 'fg' command
 
 sensLoc  = BLE_HRS_BODY_SENSOR_LOCATION_CHEST  //See lib/ble.sblib for more defines
 
@@ -705,73 +691,6 @@ sub InitDisService()
 endsub
 
 //==============================================================================
-// Data to encode is in hrtRate, sensCntct, hRing
-//==============================================================================
-sub HrsEncode()
-  dim rc
-  dim itms
-  dim encsz
-  dim flgs
-  dim ndx
-  dim rr
-
-  //Initialise the flags byte
-  flgs = 0
-  //Get number of items in the RR buffer
-  rc = CircBufItems(hRing, itms)
-
-  if hrtRate < 256 then
-    //Only one byte to encode
-    encsz = (itms*2) + 2
-  else
-    //Two bytes to encode
-    encsz = (itms*2) + 3
-    //Heart rate is in 2 bytes
-    flgs  = flgs | 0x01
-  endif
-
-  //Update the sensor contact info
-  if sensCntct then
-    flgs  = flgs | 0x06
-  else
-    flgs  = flgs | 0x04
-  endif
-
-  //Update the rrInfo bit
-  if itms then
-    flgs  = flgs | 0x10
-  endif
-
-  //Create the attribute buffer space
-  rc= StrFill(hrs$, 0, encsz)
-
-  // rc = BleEncode8(hrs$, 0x00, 0)
-  // AssertRC(rc, 750)
-  // rc = BleEncode8(hrs$, 0xEE, 1)
-  // AssertRC(rc, 753)
-
-  //Save the flags field
-  rc = BleEncode8(hrs$, flgs, 0)
-
-  //Save the heart rate info
-  if hrtRate < 256 then
-    rc = BleEncode8(hrs$, hrtRate, 1)
-    ndx = 2
-  else
-    rc = BleEncode16(hrs$, hrtRate, 1)
-    ndx = 3
-  endif
-
-  //Save the rrInfo if there is any
-  while (itms)
-    rc = CircBufRead(hRing, rr)
-    rc = BleEncode16(hrs$, rr, ndx)
-    ndx = ndx + 2
-    itms = itms - 1
-  endwhile
-endsub
-
-//==============================================================================
 //==============================================================================
 function AddCharHrsMeas() as integer
   dim rc, mdAttr, mdCccd, mdSccd, chProp
@@ -796,9 +715,6 @@ function AddCharHrsMeas() as integer
   chProp = BLE_CHAR_PROPERTIES_READ | BLE_CHAR_PROPERTIES_WRITE
   rc = BleCharNew(chProp, BleHandleUuid16(0x2A38), mdAttr, mdCccd, mdSccd)
   AssertRC(rc,  931)
-
-  //Commit the characteristic
-  // HrsEncode()
 
   readBuffer$ = "Hi"
   rc = BleCharCommit(shHrs, readBuffer$, chInbound)
@@ -830,7 +746,6 @@ function AddNotifyChar() as integer
   AssertRC(rc, 931)
 
   //Commit the characteristic
-  HrsEncode()
   rc = BleCharCommit(shHrs,hrs$,chHrsMeas)
   AssertRC(rc, 938)
 
@@ -883,8 +798,6 @@ endsub
 //==============================================================================
 function SendHrData() as integer
   dim rc
-  //HrsEncode()
-  // print "\nhrs_attr=";strhexize$(hrs$);"\n"
   rc = BleCharValueNotify(chHrsMeas, hrs$)
   AssertRC(rc,  1041)
 endfunc rc
@@ -895,7 +808,6 @@ endfunc rc
 //==============================================================================
 function SendData(byref msg$ as string) as integer
   dim rc
-  // msg$ = strdehexize$(msg$)
   rc = BleCharValueNotify(chHrsMeas, msg$)
   AssertRC(rc,  906)
 endfunc rc
@@ -1202,7 +1114,7 @@ function OnUartCmd(stData$, datalen) as integer
   endif
 
   //Send a response back to the user
-  UartRsp(rsp)
+  // UartRsp(rsp)
 
 endfunc 1
 
@@ -1294,19 +1206,10 @@ endfunc 1
 // This handler is called when an advertisment has timed out
 //==============================================================================
 function HandlerBlrAdvTimOut() as integer
-
   if AdvMngrOnAdvTimeOut() == 0 then
-
     DbgMsg( "\nAdvert stopped via timeout" )
-    //DbgMsg( "\n   - could use SystemStateSet(0) to switch off" )
-
-    //------------------------------------------------------------
-    //  Switch off the system - requires a power cycle to recover
-    //------------------------------------------------------------
-    //  rc = SystemStateSet(0)
-    //  AssertRC(rc,  1437)
+    StartAds(1)
   endif
-
 endfunc 1
 
 //==============================================================================
@@ -1315,14 +1218,11 @@ endfunc 1
 FUNCTION HndlrChar(BYVAL chrHndl, BYVAL offset, BYVAL len)  
     dim s$, rc
     IF chrHndl == chInbound THEN
-        PRINT "\n";len;" byte(s) have been written to char value attribute from offset ";offset
-        
+        // PRINT "\n";len;" byte(s) have been written to char value attribute from offset ";offset
         rc=BleCharValueRead(chInbound,s$)
         AssertRC(rc, 1459)
-        PRINT "\nNew Char Value: ";s$
-
-        DbgMsg("Done")
-        // SendHrData()
+        PRINT "\n!!";s$
+        // DbgMsg("Done")
     ENDIF
 ENDFUNC 1
 
