@@ -114,19 +114,18 @@ class Coder(object):
         See link of struct packing types here: https://docs.python.org/3/library/struct.html
         '''
 
-        byte_msg = message.encode()
+        data = b'\n' + message.encode() + b'\r'
         ret = []
 
         # Number of packets based on the size of packets
         # NOTE: account for the length of the these headers!
-        packets = math.ceil(len(byte_msg) / MAX_OUT_LEN)
+        # packets = math.ceil(len(byte_msg) / MAX_OUT_LEN)
 
         # Structure: first is the size of the message, then the message itself
-        data = struct.pack('i' + str(len(byte_msg)) + 's', packets, byte_msg)
+        # data = struct.pack('i' + str(len(byte_msg)) + 's', packets, byte_msg)
 
         # Cut the encoded message into max_len sized slices
         while len(data) > 0:
-            print("Round")
             size = min(MAX_OUT_LEN, len(data))
             ret.append(data[:size])
             data = data[size:]
@@ -161,8 +160,8 @@ def startCoderTests():
 
 
 if __name__ == '__main__':
-    startSerialConnection()
-    # startCoderTests()
+    # startSerialConnection()
+    startCoderTests()
 
 
 
