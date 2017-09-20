@@ -35,7 +35,7 @@ MAX_OUT_LEN = 40
 class SerialConnection(object):
     '''
     Manages the serial connection on its own internal thread, using a
-    queue to batch up messages that arrive from the controller.
+    queue to batch up messages that arrive from the controller. 
     '''
 
     def __init__(self, port):
